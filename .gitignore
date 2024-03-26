@@ -1,0 +1,6 @@
+.codecc
+.idea
+.vscode
+.history
+bazel-*/
+MODULE*
