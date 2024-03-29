@@ -33,3 +33,5 @@ bazel build //:pipeline --sandbox_debug
 [1] Go Concurrency Patterns: Pipelines and cancellation: https://go.dev/blog/pipelines
 
 [2] C++ Pipeline Pattern: https://github.com/Saahitya/pipeline_design_pattern
+
+[3] Go CheckComm: https://git.woa.com/prd_base_pay_go/check_comm.git
