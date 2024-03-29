@@ -1,4 +1,4 @@
-workspace(name = "check_comm")
+workspace(name = "pipeline")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 

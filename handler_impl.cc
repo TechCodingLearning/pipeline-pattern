@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 23:00:48
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-26 09:36:46
+ * @LastEditTime: 2024-03-27 08:05:44
  * @FilePath: /pipeline/handler_impl.cc
  * @Description:
  *
@@ -31,16 +31,16 @@ HandlerImpl::HandlerImpl(std::string name, int task_num, Limiter* limiter,
 HandlerImpl::~HandlerImpl(){};
 
 // 处理逻辑
-DataSlice HandlerImpl::Handle(ChannelData* chanData) {
+DataSlice HandlerImpl::Handle(const ChannelData& chanData) {
   if (this->only_once_) {
     this->SetDone(true);
   }
 
-  if (this->ignore_end_data_ && chanData->IsEnd()) {
+  if (this->ignore_end_data_ && chanData.IsEnd()) {
     std::cout << "HandlerImpl " << this->name_
               << "Handle ignoreEndData == true && chanData.IsEnd()"
               << std::endl;
-    return nullptr;
+    return {};
   }
 
   return this->handle_(chanData);

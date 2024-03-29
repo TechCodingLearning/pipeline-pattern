@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 19:53:39
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-24 20:30:57
+ * @LastEditTime: 2024-03-29 18:10:50
  * @FilePath: /pipeline/comm/functional.h
  * @Description:
  *
@@ -11,10 +11,18 @@
 #ifndef PIPELINE_COMM_FUNCTIONAL_H_
 #define PIPELINE_COMM_FUNCTIONAL_H_
 
+#include <deque>
+#include <list>
+#include <map>
 #include <numeric>
+#include <queue>
+#include <set>
+#include <sstream>
 #include <vector>
 
 namespace PIPELINE {
+
+const int MAX_BUF_SIZE = 512;
 
 struct AddOneFunc {
   int operator()(int x) const { return x + 1; }
@@ -35,6 +43,37 @@ class PipeClosue : public T {
 template <typename L, typename F>
 auto operator|(L&& x, const PipeClosue<F> p) {
   return p(x);
+}
+
+template <typename... Args>
+std::string pprintf(const std::string& format, const Args&... args) {
+  char buffer[MAX_BUF_SIZE];
+  std::snprintf(buffer, sizeof(buffer), format.c_str(), args...);
+  return std::string(buffer);
+}
+
+template <typename Container>
+std::string pprintf(const Container& container) {
+  std::ostringstream oss;
+  oss << "[ ";
+  for (auto it = container.begin(); it != container.end(); it++) {
+    oss << *it;
+    oss << " ";
+  }
+  oss << "]";
+  return oss.str();
+}
+
+template <typename Key, typename Value>
+std::string pprintf(const std::map<Key, Value>& mp) {
+  std::ostringstream oss;
+  oss << "[ ";
+  for (const auto& pair : mp) {
+    oss << pair.first << ": " << pair.second;
+    oss << " ";
+  }
+  oss << "]";
+  return oss.str();
 }
 
 }  // namespace PIPELINE

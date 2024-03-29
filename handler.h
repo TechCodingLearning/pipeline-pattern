@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 20:22:41
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-26 09:36:29
+ * @LastEditTime: 2024-03-29 09:57:17
  * @FilePath: /pipeline/handler.h
  * @Description:
  *
@@ -19,7 +19,7 @@
 namespace PIPELINE {
 
 // 函数指针
-typedef DataSlice (*HandleFunc)(ChannelData* chanData);
+typedef DataSlice (*HandleFunc)(const ChannelData& chanData);
 
 // 处理器抽象基类
 class Handler {
@@ -32,7 +32,7 @@ class Handler {
 
   virtual int OutChanNum() = 0;
 
-  virtual DataSlice Handle(ChannelData* chanData) = 0;
+  virtual DataSlice Handle(const ChannelData& chanData) = 0;
 };
 
 // 带限流的处理器抽象基类
@@ -70,7 +70,7 @@ class HandlerBase : HandlerSupportNeedLimit {
 
   int OutChanNum() override { return this->out_chan_num_; }
 
-  virtual DataSlice Handle(ChannelData* chanData) override { return nullptr; };
+  virtual DataSlice Handle(const ChannelData& chanData) override { return {}; }
 
   bool NeedLimit(ChannelData* chanData) override {
     return this->limiter_ != nullptr;
@@ -88,6 +88,9 @@ class HandlerBase : HandlerSupportNeedLimit {
   int in_chan_num_;
   int out_chan_num_;
   std::atomic<bool> done_;
+
+  HandlerBase(const HandlerBase&) = delete;             // 禁用
+  HandlerBase& operator=(const HandlerBase&) = delete;  // 禁用
 };
 
 // 处理器实现类
@@ -98,7 +101,7 @@ class HandlerImpl : HandlerBase {
 
   virtual ~HandlerImpl();
 
-  DataSlice Handle(ChannelData* chanData);
+  DataSlice Handle(const ChannelData& chanData);
 
   void SetOnlyOnce(bool only_Once);
 
@@ -108,6 +111,9 @@ class HandlerImpl : HandlerBase {
   HandleFunc handle_;
   bool only_once_;
   bool ignore_end_data_;
+
+  HandlerImpl(const HandlerBase&) = delete;             // 禁用
+  HandlerImpl& operator=(const HandlerBase&) = delete;  // 禁用
 };
 
 }  // namespace PIPELINE

@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 20:34:20
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-24 23:55:19
+ * @LastEditTime: 2024-03-27 08:05:14
  * @FilePath: /pipeline/comm/defines.h
  * @Description:
  *
@@ -22,14 +22,14 @@ struct ChannelData {
   void* data;
   ChannelData(int idx, void* data) : index(idx), data(data) {}
 
-  void* GetData() { return data; };
+  void* GetData() const { return data; };
 
-  int GetIndex() { return index; };
+  int GetIndex() const { return index; };
 
-  bool IsEnd() { return data == nullptr; }
+  bool IsEnd() const { return data == nullptr; }
 };
 
-typedef ChannelData* DataSlice;
+typedef std::vector<ChannelData> DataSlice;
 
 }  // namespace PIPELINE
 

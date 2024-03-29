@@ -1,0 +1,90 @@
+==================== Test output for //:component_test:
+Running main() from gmock_main.cc
+[==========] Running 6 tests from 6 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from FunctionalTest
+[ RUN      ] FunctionalTest.Basic
+running...
+chData.data: aaaa
+number=4
+test pprintf:aaa, 27
+[ 1 2 3 4 ]
+[ aaaa bbbb cccc ]
+[ 3 4 5 ]
+[ case1: 1 case2: 2 ]
+[       OK ] FunctionalTest.Basic (0 ms)
+[----------] 1 test from FunctionalTest (0 ms total)
+
+[----------] 1 test from RateLimiterTest
+[ RUN      ] RateLimiterTest.Basic
+Request: 1 processed. Time: 2024-03-29 10:11:01
+Request: 2 processed. Time: 2024-03-29 10:11:01
+Request: 3 processed. Time: 2024-03-29 10:11:01
+Request: 4 processed. Time: 2024-03-29 10:11:01
+Request: 5 processed. Time: 2024-03-29 10:11:01
+Request: 6 processed. Time: 2024-03-29 10:11:02
+Request: 7 processed. Time: 2024-03-29 10:11:02
+Request: 8 processed. Time: 2024-03-29 10:11:02
+Request: 9 processed. Time: 2024-03-29 10:11:02
+Request: 10 processed. Time: 2024-03-29 10:11:02
+[       OK ] RateLimiterTest.Basic (1805 ms)
+[----------] 1 test from RateLimiterTest (1805 ms total)
+
+[----------] 1 test from DebugTest
+[ RUN      ] DebugTest.Basic
+DDDDD test debug[tony], value[27]
+DDDDD test debug[tom], value[29]
+DDDDD test debug[tom], value[99]
+[       OK ] DebugTest.Basic (0 ms)
+[----------] 1 test from DebugTest (0 ms total)
+
+[----------] 1 test from ThreadTest
+[ RUN      ] ThreadTest.Basic
+0-th thread exit after sleep 100ms...
+2-th thread exit after sleep 100ms...
+3-th thread exit after sleep 100ms...
+5-th thread exit after sleep 100ms...1-th thread exit after sleep 100ms...7
+
+869-th thread exit after sleep 100ms...
+-th thread exit after sleep 100ms...
+4-th thread exit after sleep 100ms...
+-th thread exit after sleep 100ms...
+-th thread exit after sleep 100ms...
+[       OK ] ThreadTest.Basic (0 ms)
+[----------] 1 test from ThreadTest (1 ms total)
+
+[----------] 1 test from FutureTest
+[ RUN      ] FutureTest.Basic
+0-th aaaa
+1-th aaaa
+2-th aaaa
+0-th pass?: 1
+1-th pass?: 1
+2-th pass?: 1
+4-th aaaa
+Exception caught: 3-th error
+[       OK ] FutureTest.Basic (0 ms)
+[----------] 1 test from FutureTest (0 ms total)
+
+[----------] 1 test from BlockingQueueTest
+[ RUN      ] BlockingQueueTest.Basic
+ok:1 ele:1
+blocking queue has been closed! Cannot push element again!
+ok:1 ele:2
+ok:1 ele:3
+ch has been closed!
+ok:1 ele:1
+ok:1 ele:2
+ok:1 ele:3
+ch1 has been closed!
+[       OK ] BlockingQueueTest.Basic (0 ms)
+[----------] 1 test from BlockingQueueTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 6 test suites ran. (1807 ms total)
+[  PASSED  ] 6 tests.
+================================================================================
+//:component_test                                                        PASSED in 2.1s
+
+Executed 1 out of 1 test: 1 test passes.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.

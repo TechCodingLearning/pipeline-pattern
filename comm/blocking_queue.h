@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 19:27:55
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-26 07:41:03
+ * @LastEditTime: 2024-03-29 17:04:49
  * @FilePath: /pipeline/comm/blocking_queue.h
  * @Description:
  *
@@ -24,12 +24,16 @@ const unsigned int MAX_QUE_COUNT = 65535;  // 阻塞队列最大元素数
 template <typename T>
 class BlockingQueue {
  public:
-  BlockingQueue() {}
+  BlockingQueue() : is_closed_(false) {}
   void Push(T item) {
     {
       std::lock_guard<std::mutex> lock(this->mtx_);
+      if (this->is_closed_) {
+        throw std::runtime_error(
+            "blocking queue has been closed! Cannot push element again!");
+      }
       if (this->queue_.size() >= MAX_QUE_COUNT) {
-        return
+        return;
       }
       this->queue_.push(std::move(item));
     }
@@ -55,20 +59,31 @@ class BlockingQueue {
     this->queue_.pop();
   }
 
-  bool empty() const {
+  bool Empty() const {
     std::lock_guard<std::mutex> lock(this->mtx_);
     return this->queue_.empty();
   }
 
-  unsigned int size() const {
+  unsigned int Size() const {
     std::lock_guard<std::mutex> lock(this->mtx_);
     return this->queue_.size();
   }
 
+  void Close() {
+    std::lock_guard<std::mutex> lock(this->mtx_);
+    this->is_closed_ = true;
+  }
+
+  bool IsClosed() {
+    std::lock_guard<std::mutex> lock(this->mtx_);
+    return this->is_closed_;
+  }
+
  private:
   std::queue<T> queue_;
-  mutable std::mutext mtx_;
+  mutable std::mutex mtx_;
   std::condition_variable cond_;
+  bool is_closed_;
 
   BlockingQueue& operator=(const BlockingQueue&) = delete;  // 禁用赋值构造函数
   BlockingQueue(const BlockingQueue& other) = delete;  // 禁用构造函数

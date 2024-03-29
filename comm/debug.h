@@ -2,14 +2,14 @@
  * @Author: lourisxu
  * @Date: 2024-03-26 07:45:36
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-26 08:05:18
- * @FilePath: /pipeline/debug.h
+ * @LastEditTime: 2024-03-29 11:33:50
+ * @FilePath: /pipeline/comm/debug.h
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
  */
-#ifndef PIPELINE_DEBUG_H_
-#define PIPELINE_DEBUG_H_
+#ifndef PIPELINE_COMM_DEBUG_H_
+#define PIPELINE_COMM_DEBUG_H_
 
 #include <stdio.h>
 
@@ -32,4 +32,4 @@ void DisblaeDebug() { ddddDebug = false; }
 
 }  // namespace PIPELINE
 
-#endif  // PIPELINE_DEBUG_H_
+#endif  // PIPELINE_COMM_DEBUG_H_
