@@ -1,6 +1,6 @@
 ==================== Test output for //:component_test:
 Running main() from gmock_main.cc
-[==========] Running 6 tests from 6 test suites.
+[==========] Running 7 tests from 7 test suites.
 [----------] Global test environment set-up.
 [----------] 1 test from FunctionalTest
 [ RUN      ] FunctionalTest.Basic
@@ -17,16 +17,16 @@ test pprintf:aaa, 27
 
 [----------] 1 test from RateLimiterTest
 [ RUN      ] RateLimiterTest.Basic
-Request: 1 processed. Time: 2024-03-29 10:11:01
-Request: 2 processed. Time: 2024-03-29 10:11:01
-Request: 3 processed. Time: 2024-03-29 10:11:01
-Request: 4 processed. Time: 2024-03-29 10:11:01
-Request: 5 processed. Time: 2024-03-29 10:11:01
-Request: 6 processed. Time: 2024-03-29 10:11:02
-Request: 7 processed. Time: 2024-03-29 10:11:02
-Request: 8 processed. Time: 2024-03-29 10:11:02
-Request: 9 processed. Time: 2024-03-29 10:11:02
-Request: 10 processed. Time: 2024-03-29 10:11:02
+Request: 1 processed. Time: 2024-04-03 00:57:15
+Request: 2 processed. Time: 2024-04-03 00:57:15
+Request: 3 processed. Time: 2024-04-03 00:57:16
+Request: 4 processed. Time: 2024-04-03 00:57:16
+Request: 5 processed. Time: 2024-04-03 00:57:16
+Request: 6 processed. Time: 2024-04-03 00:57:16
+Request: 7 processed. Time: 2024-04-03 00:57:16
+Request: 8 processed. Time: 2024-04-03 00:57:17
+Request: 9 processed. Time: 2024-04-03 00:57:17
+Request: 10 processed. Time: 2024-04-03 00:57:17
 [       OK ] RateLimiterTest.Basic (1805 ms)
 [----------] 1 test from RateLimiterTest (1805 ms total)
 
@@ -41,16 +41,16 @@ DDDDD test debug[tom], value[99]
 [----------] 1 test from ThreadTest
 [ RUN      ] ThreadTest.Basic
 0-th thread exit after sleep 100ms...
-2-th thread exit after sleep 100ms...
-3-th thread exit after sleep 100ms...
-5-th thread exit after sleep 100ms...1-th thread exit after sleep 100ms...7
+1-th thread exit after sleep 100ms...
+2-th thread exit after sleep 100ms...5
+74-th thread exit after sleep 100ms...-th thread exit after sleep 100ms...
+8-th thread exit after sleep 100ms...
 
-869-th thread exit after sleep 100ms...
+3-th thread exit after sleep 100ms...
+9-th thread exit after sleep 100ms...
+6-th thread exit after sleep 100ms...
 -th thread exit after sleep 100ms...
-4-th thread exit after sleep 100ms...
--th thread exit after sleep 100ms...
--th thread exit after sleep 100ms...
-[       OK ] ThreadTest.Basic (0 ms)
+[       OK ] ThreadTest.Basic (1 ms)
 [----------] 1 test from ThreadTest (1 ms total)
 
 [----------] 1 test from FutureTest
@@ -58,13 +58,13 @@ DDDDD test debug[tom], value[99]
 0-th aaaa
 1-th aaaa
 2-th aaaa
+4-th aaaa
 0-th pass?: 1
 1-th pass?: 1
 2-th pass?: 1
-4-th aaaa
 Exception caught: 3-th error
-[       OK ] FutureTest.Basic (0 ms)
-[----------] 1 test from FutureTest (0 ms total)
+[       OK ] FutureTest.Basic (1 ms)
+[----------] 1 test from FutureTest (1 ms total)
 
 [----------] 1 test from BlockingQueueTest
 [ RUN      ] BlockingQueueTest.Basic
@@ -80,11 +80,18 @@ ch1 has been closed!
 [       OK ] BlockingQueueTest.Basic (0 ms)
 [----------] 1 test from BlockingQueueTest (0 ms total)
 
+[----------] 1 test from InterfaceTest
+[ RUN      ] InterfaceTest.Basic
+对象1实现了接口
+对象2未实现接口
+[       OK ] InterfaceTest.Basic (0 ms)
+[----------] 1 test from InterfaceTest (0 ms total)
+
 [----------] Global test environment tear-down
-[==========] 6 tests from 6 test suites ran. (1807 ms total)
-[  PASSED  ] 6 tests.
+[==========] 7 tests from 7 test suites ran. (1808 ms total)
+[  PASSED  ] 7 tests.
 ================================================================================
-//:component_test                                                        PASSED in 2.1s
+//:component_test                                                        PASSED in 1.8s
 
 Executed 1 out of 1 test: 1 test passes.
 There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.

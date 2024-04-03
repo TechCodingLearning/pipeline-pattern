@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-26 07:09:59
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-29 17:37:19
+ * @LastEditTime: 2024-04-03 08:47:34
  * @FilePath: /pipeline/handler_scheduler.h
  * @Description:
  *
@@ -45,6 +45,15 @@ class HandlerScheduler {
   // 从扇入通道选择数据发送到中心式合并通道
   void SelectAndResendData(std::promise<bool> promise, int thread_idx);
 
+  // 从扇入通道选择数据
+  std::tuple<ChannelData, bool> SelectData();
+
+  // 等待所有数据处理完毕
+  void WaitUntil(const int& expect_n, std::string scene);
+
+  // 唤醒
+  void NotifyCondSignal();
+
   // 处理器并发处理中心式合并通道的数据，处理结果输出到扇出通道
   void RunTask(std::promise<bool> promise, int task_idx);
 
@@ -52,10 +61,13 @@ class HandlerScheduler {
   std::tuple<ChannelData, bool> TaskSelectData();
 
   // 任务限流
-  void TaskRateLimit(int task_index, const ChannelData chan_data);
+  void TaskRateLimit(int task_index, const ChannelData& chan_data);
 
   // 任务处理数据，并将结果输出到对应的扇出通道
   bool TaskDealOutData(const DataSlice& data_list);
+
+  // 检查是否主动停止
+  bool TaskDetectDone(int task_idx);
 
   // 核心处理逻辑
   DataSlice Handle(const ChannelData& chan_data);

@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:56:51
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-29 18:07:09
+ * @LastEditTime: 2024-04-03 08:32:10
  * @FilePath: /pipeline/example/component_test.cc
  * @Description:
  *
@@ -63,7 +63,7 @@ TEST(RateLimiterTest, Basic) {
       std::chrono::system_clock::now();
   char timeString[100];
   for (int i = 0; i < 10; i++) {
-    long x = limiter->Acquire(1);
+    limiter->Acquire(1);
 
     curTime = std::chrono::system_clock::now();
     // 将时间点转换为时间结构体
@@ -188,4 +188,40 @@ TEST(BlockingQueueTest, Basic) {
   cout << "ch1 has been closed!" << endl;
 }
 
+// 抽象基类定义接口
+class Interface {
+ public:
+  virtual void doSomething() = 0;  // 纯虚函数
+};
+
+// 实现接口的类
+class MyClass : public Interface {
+ public:
+  virtual ~MyClass(){};
+  void doSomething() override {
+    std::cout << "MyClass 实现了接口" << std::endl;
+  }
+};
+
+class MyClass2 {
+ public:
+  virtual ~MyClass2(){};
+};
+
+TEST(InterfaceTest, Basic) {
+  MyClass obj;
+  MyClass2 obj2;
+
+  if (dynamic_cast<Interface*>(&obj)) {
+    std::cout << "对象1实现了接口" << std::endl;
+  } else {
+    std::cout << "对象1未实现接口" << std::endl;
+  }
+
+  if (dynamic_cast<Interface*>(&obj2)) {
+    std::cout << "对象2实现了接口" << std::endl;
+  } else {
+    std::cout << "对象2未实现接口" << std::endl;
+  }
+}
 }  // namespace

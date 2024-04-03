@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 19:27:55
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-29 17:04:49
+ * @LastEditTime: 2024-03-31 08:56:52
  * @FilePath: /pipeline/comm/blocking_queue.h
  * @Description:
  *
@@ -74,7 +74,7 @@ class BlockingQueue {
     this->is_closed_ = true;
   }
 
-  bool IsClosed() {
+  bool Closed() {
     std::lock_guard<std::mutex> lock(this->mtx_);
     return this->is_closed_;
   }

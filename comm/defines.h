@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 20:34:20
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-27 08:05:14
+ * @LastEditTime: 2024-04-03 07:52:34
  * @FilePath: /pipeline/comm/defines.h
  * @Description:
  *
@@ -11,8 +11,7 @@
 
 #ifndef PIPELINE_COMM_DEFINES_H_
 #define PIPELINE_COMM_DEFINES_H_
-
-#include <iostream>
+#include <sstream>
 
 namespace PIPELINE {
 
@@ -20,6 +19,7 @@ namespace PIPELINE {
 struct ChannelData {
   int index;
   void* data;
+  ChannelData() : index(-1), data(nullptr) {}
   ChannelData(int idx, void* data) : index(idx), data(data) {}
 
   void* GetData() const { return data; };
@@ -27,6 +27,12 @@ struct ChannelData {
   int GetIndex() const { return index; };
 
   bool IsEnd() const { return data == nullptr; }
+
+  std::string String() const {
+    std::ostringstream oss;
+    oss << "[index: " << index << ", data: " << data << "\n";
+    return oss.str();
+  }
 };
 
 typedef std::vector<ChannelData> DataSlice;

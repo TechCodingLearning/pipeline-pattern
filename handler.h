@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 20:22:41
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-29 09:57:17
+ * @LastEditTime: 2024-04-03 08:36:19
  * @FilePath: /pipeline/handler.h
  * @Description:
  *
@@ -33,12 +33,14 @@ class Handler {
   virtual int OutChanNum() = 0;
 
   virtual DataSlice Handle(const ChannelData& chanData) = 0;
+
+  virtual ~Handler(){};
 };
 
 // 带限流的处理器抽象基类
 class HandlerSupportNeedLimit : Handler {
  public:
-  virtual bool NeedLimit(ChannelData* chanData) = 0;
+  virtual bool NeedLimit() = 0;
   virtual Limiter* GetLimiter() = 0;
 };
 
@@ -72,9 +74,7 @@ class HandlerBase : HandlerSupportNeedLimit {
 
   virtual DataSlice Handle(const ChannelData& chanData) override { return {}; }
 
-  bool NeedLimit(ChannelData* chanData) override {
-    return this->limiter_ != nullptr;
-  }
+  bool NeedLimit() override { return this->limiter_ != nullptr; }
 
   Limiter* GetLimiter() override { return this->limiter_; }
 
