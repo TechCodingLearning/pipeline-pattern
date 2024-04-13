@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:56:51
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-03 08:32:10
+ * @LastEditTime: 2024-04-14 01:19:12
  * @FilePath: /pipeline/example/component_test.cc
  * @Description:
  *
@@ -21,9 +21,9 @@
 #include "comm/functional.h"
 #include "comm/rate_limiter.h"
 #include "debug.h"
+// #include "pipeline.h"
 
 namespace {
-
 using namespace std;
 
 TEST(FunctionalTest, Basic) {
@@ -52,6 +52,8 @@ TEST(FunctionalTest, Basic) {
   mp["case1"] = 1;
   mp["case2"] = 2;
   cout << PIPELINE::pprintf(mp) << endl;
+
+  cout << PIPELINE::pprintf(10, "| %s %d %c |", "aaa", 2, 'h') << endl;
 }
 
 TEST(RateLimiterTest, Basic) {
@@ -197,10 +199,19 @@ class Interface {
 // 实现接口的类
 class MyClass : public Interface {
  public:
+  MyClass() {}
+  MyClass(std::string name) : name_(name) {}
   virtual ~MyClass(){};
   void doSomething() override {
     std::cout << "MyClass 实现了接口" << std::endl;
   }
+
+  void SetName(std::string name) { this->name_ = name; }
+
+  std::string String() { return this->name_; }
+
+ private:
+  std::string name_;
 };
 
 class MyClass2 {
@@ -224,4 +235,78 @@ TEST(InterfaceTest, Basic) {
     std::cout << "对象2未实现接口" << std::endl;
   }
 }
+
+void testConstVector(const std::vector<MyClass*>& vec) {
+  for (auto& item : vec) {
+    std::cout << item->String() << std::endl;
+    item->SetName(item->String() + "cc");
+  }
+}
+
+TEST(ConstVector, Basic) {
+  std::vector<MyClass*> vec;
+  vec.push_back(new MyClass("aaaa"));
+  vec.push_back(new MyClass("bbbb"));
+  testConstVector(vec);
+  for (auto& item : vec) {
+    std::cout << item->String() << std::endl;
+  }
+}
+
+TEST(VectorSlice, Basic) {
+  // std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7};
+  // std::vector<int> vec1(vec.begin(), vec.begin() + 2);
+  // vec1[0] = 100;
+  // for (auto& item : vec) {
+  //   std::cout << item << std::endl;
+  // }
+
+  std::vector<MyClass*> vec;
+  vec.push_back(new MyClass("aaaa"));
+  vec.push_back(new MyClass("bbbb"));
+  vec.push_back(new MyClass("cccc"));
+  vec.push_back(new MyClass("dddd"));
+  vec[0]->SetName("acbdd");
+  for (auto& item : vec) {
+    std::cout << item->String() << std::endl;
+  }
+}
+
+TEST(PipelinePrint, Basic) {
+  // PIPELINE::Pipeline* p = PIPELINE::NewPipeline();
+  // PIPELINE::HandlerImpl* handler = PIPELINE::NewHandler(
+  //     "handler1", 1, nullptr, 0, 2, [](const PIPELINE::ChannelData&
+  //     chan_data) {
+  //       std::vector<PIPELINE::ChannelData> res(2);
+  //       for (int i = 0; i < 2; i++) {
+  //         res.push_back(PIPELINE::ChannelData(0, new int(i)));
+  //       }
+  //       res.push_back(PIPELINE::ChannelData(0, nullptr));
+  //       return res;
+  //     });
+  // p->AddStage(PIPELINE::NewStage(
+  //     "stage1", PIPELINE::NewHandler(
+  //                   "handler1", 1, nullptr, 0, 2,
+  //                   [](const PIPELINE::ChannelData& chan_data) {
+  //                     std::vector<PIPELINE::ChannelData> res(2);
+  //                     for (int i = 0; i < 2; i++) {
+  //                       res.push_back(PIPELINE::ChannelData(0, new
+  //                       int(i)));
+  //                     }
+  //                     res.push_back(PIPELINE::ChannelData(0, nullptr));
+  //                     return res;
+  //                   })));
+  // p->AddStage(PIPELINE::NewStage(
+  //     "stage2",
+  //     PIPELINE::NewHandler("handler2", 5, nullptr, 2, 0,
+  //                          [](const PIPELINE::ChannelData& chan_data) {
+  //                            if (!chan_data.IsEnd()) {
+  //                              std::this_thread::sleep_for(
+  //                                  std::chrono::microseconds(100));
+  //                            }
+  //                            return std::vector<PIPELINE::ChannelData>();
+  //                          })));
+  // cout << p->String() << endl;
+}
+
 }  // namespace

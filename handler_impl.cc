@@ -2,22 +2,22 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 23:00:48
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-27 08:05:44
+ * @LastEditTime: 2024-04-14 01:11:00
  * @FilePath: /pipeline/handler_impl.cc
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
  */
 
+#include "handler_impl.h"
+
 #include <iostream>
 
 #include "comm/rate_limiter.h"
-#include "handler.h"
 
 namespace PIPELINE {
 
 // 处理器实现
-
 // 构造函数
 HandlerImpl::HandlerImpl(std::string name, int task_num, Limiter* limiter,
                          int in_chan_num, int out_chan_num,

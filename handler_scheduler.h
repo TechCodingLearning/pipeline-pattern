@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-26 07:09:59
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-03 08:47:34
+ * @LastEditTime: 2024-04-14 00:14:03
  * @FilePath: /pipeline/handler_scheduler.h
  * @Description:
  *
@@ -22,7 +22,6 @@
 
 #include "comm/blocking_queue.h"
 #include "comm/defines.h"
-#include "debug.h"
 #include "handler.h"
 namespace PIPELINE {
 
@@ -30,13 +29,13 @@ namespace PIPELINE {
 class HandlerScheduler {
  public:
   HandlerScheduler(Handler* handler,
-                   std::vector<BlockingQueue<ChannelData>*> in_chans,
-                   std::vector<BlockingQueue<ChannelData>*> out_chans);
+                   const std::vector<BlockingQueue<ChannelData>*>& in_chans,
+                   const std::vector<BlockingQueue<ChannelData>*>& out_chans);
 
   ~HandlerScheduler();
 
   // 调度
-  void Schedule();
+  void Schedule(std::promise<bool> promise, int thread_idx);
 
  private:
   // 开始并发任务处理

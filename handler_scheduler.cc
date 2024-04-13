@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-27 08:15:21
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-03 08:56:54
+ * @LastEditTime: 2024-04-09 08:19:57
  * @FilePath: /pipeline/handler_scheduler.cc
  * @Description:
  *
@@ -17,12 +17,13 @@
 
 #include "comm/functional.h"
 #include "comm/utils.h"
+#include "debug.h"
 
 namespace PIPELINE {
 
 HandlerScheduler::HandlerScheduler(
-    Handler *handler, std::vector<BlockingQueue<ChannelData> *> in_chans,
-    std::vector<BlockingQueue<ChannelData> *> out_chans) {
+    Handler *handler, const std::vector<BlockingQueue<ChannelData> *> &in_chans,
+    const std::vector<BlockingQueue<ChannelData> *> &out_chans) {
   this->handler_ = handler;
   this->ins_ = in_chans;
   this->outs_ = out_chans;
@@ -33,7 +34,7 @@ HandlerScheduler::HandlerScheduler(
 
 HandlerScheduler::~HandlerScheduler() {}
 
-void HandlerScheduler::Schedule() {
+void HandlerScheduler::Schedule(std::promise<bool> promise, int thread_idx) {
   if (this->started_) {
     throw std::runtime_error(pprintf("HandlerScheduler %s taskNum:%d",
                                      this->handler_->Name().c_str(),
@@ -64,7 +65,7 @@ void HandlerScheduler::StartTasks() {
                                 std::move(result_promises[0]), -1));
   // 绑定扇出通道处理函数
   for (int i = 1; i < n_thread; i++) {
-    result_futures[i + 1] = result_promises[i].get_future();
+    result_futures[i] = result_promises[i].get_future();
     threads.push_back(std::thread(&HandlerScheduler::RunTask, this,
                                   std::move(result_promises[i]), i - 1));
   }
@@ -75,10 +76,10 @@ void HandlerScheduler::StartTasks() {
       result_futures[i].get();  // 子线程如果发生异常，则抛出
     }
   } catch (const std::future_error &e) {
-    std::cerr << "FutureError: " << e.what() << std::endl;
+    std::cerr << "Run Scheduler FutureError: " << e.what() << std::endl;
     throw std::runtime_error(e.what());
   } catch (const std::exception &e) {
-    std::cerr << "Exception caught: " << e.what() << std::endl;
+    std::cerr << "Run Scheduler Exception caught: " << e.what() << std::endl;
     throw std::runtime_error(e.what());
   }
 
@@ -206,6 +207,7 @@ void HandlerScheduler::RunTask(std::promise<bool> promise, int task_idx) {
   }
   this->NotifyCondSignal();
   DDDDDebug("HandlerScheduler %s[%d] done", this->handler_->Name(), task_idx);
+  promise.set_value(true);  // 执行成功
 }
 
 std::tuple<ChannelData, bool> HandlerScheduler::TaskSelectData() {

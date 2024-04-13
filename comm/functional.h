@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 19:53:39
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-03 08:30:34
+ * @LastEditTime: 2024-04-13 21:33:39
  * @FilePath: /pipeline/comm/functional.h
  * @Description:
  *
@@ -12,6 +12,8 @@
 #define PIPELINE_COMM_FUNCTIONAL_H_
 
 #include <deque>
+#include <iomanip>
+#include <iostream>
 #include <list>
 #include <map>
 #include <numeric>
@@ -73,6 +75,18 @@ std::string pprintf(const std::map<Key, Value>& mp) {
     oss << " ";
   }
   oss << "]";
+  return oss.str();
+}
+
+// 固定列宽格式化串
+template <typename... Args>
+std::string pprintf(const int& width, const std::string& format,
+                    const Args&... args) {
+  char buffer[MAX_BUF_SIZE];
+  std::snprintf(buffer, sizeof(buffer), format.c_str(), args...);
+
+  std::ostringstream oss;
+  oss << std::left << std::setw(width) << std::string(buffer);
   return oss.str();
 }
 
