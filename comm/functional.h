@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 19:53:39
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-13 21:33:39
+ * @LastEditTime: 2024-04-14 13:53:57
  * @FilePath: /pipeline/comm/functional.h
  * @Description:
  *

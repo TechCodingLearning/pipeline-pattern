@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-04-05 08:01:01
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 00:10:55
- * @FilePath: /pipeline/stage.cc
+ * @LastEditTime: 2024-04-14 15:04:00
+ * @FilePath: /pipeline/pipeline/stage.cc
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -13,10 +13,13 @@
 
 #include <memory>
 
+#include "handler_scheduler.h"
+
 namespace PIPELINE {
 
 Stage::Stage(std::string name, const std::vector<Handler *> &handlers)
     : name_(name), handlers_(handlers) {}
+
 Stage::~Stage() {}
 
 // 扇入通道数

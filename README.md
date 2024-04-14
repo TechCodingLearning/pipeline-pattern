@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 20:19:38
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-03 08:57:51
+ * @LastEditTime: 2024-04-14 17:34:59
  * @FilePath: /pipeline/README.md
  * @Description: 
  * 
@@ -13,6 +13,8 @@
 ## 执行单元测试用例
 ```
 bazel test --cxxopt=-std=c++17 --test_output=all //:component_test --verbose_failures --sandbox_debug > test.log
+
+bazel test --cxxopt=-std=c++17 --test_output=all //:pipeline_test --verbose_failures --sandbox_debug > pipeling_test.log
 ```
 
 ## 编译

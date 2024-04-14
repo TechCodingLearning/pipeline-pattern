@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-27 08:15:21
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-09 08:19:57
+ * @LastEditTime: 2024-04-14 13:56:12
  * @FilePath: /pipeline/handler_scheduler.cc
  * @Description:
  *
@@ -15,9 +15,9 @@
 #include <stdexcept>
 #include <string>
 
+#include "comm/debug.h"
 #include "comm/functional.h"
 #include "comm/utils.h"
-#include "debug.h"
 
 namespace PIPELINE {
 
@@ -52,7 +52,7 @@ void HandlerScheduler::StartTasks() {
                                      this->handler_->TaskNum()));
   }
 
-  DDDDDebug("HandlerScheduler %s start tasks", this->handler_->Name());
+  DDDDDebug("HandlerScheduler %s start tasks", this->handler_->Name().c_str());
 
   int n_thread = this->handler_->TaskNum() + 1;
   std::vector<std::promise<bool>> result_promises(n_thread);
@@ -98,8 +98,8 @@ void HandlerScheduler::WaitUntil(const int &expect_n, std::string scene) {
                 std::localtime(&currentTime));
   DDDDDebug(
       "HandlerScheduler %s waitUntil scene:%s expectN:%d handlerNum:%d time:%s",
-      this->handler_->Name(), scene, expect_n, this->handle_num_.load(),
-      std::string(timeString));
+      this->handler_->Name().c_str(), scene.c_str(), expect_n,
+      this->handle_num_.load(), std::string(timeString).c_str());
 
   std::unique_lock<std::mutex> lock(this->mtx_);
   while (expect_n != this->handle_num_.load()) {
@@ -121,12 +121,12 @@ void HandlerScheduler::SelectAndResendData(std::promise<bool> promise,
     auto [data, done] = this->SelectData();
     DDDDDebug(
         "HandlerScheduler %s selectAndResendData selectData data:%s, done:%d",
-        this->handler_->Name(), data.String(), done);
+        this->handler_->Name().c_str(), data.String().c_str(), done);
     if (done) {
       this->WaitUntil(n, "done");
 
       DDDDDebug("HandlerScheduler %s selectAndResendData done",
-                this->handler_->Name());
+                this->handler_->Name().c_str());
       return;
     }
 
@@ -146,7 +146,8 @@ std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
   bool all_closed = true;
 
   DDDDDebug("HandlerScheduler %s selectData closedIndex: %s",
-            this->handler_->Name(), pprintf(this->closed_index_));
+            this->handler_->Name().c_str(),
+            pprintf(this->closed_index_).c_str());
 
   for (int i = 0; i < this->ins_.size(); i++) {
     if (this->closed_index_[i]) {
@@ -161,7 +162,7 @@ std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
 
   if (all_closed) {
     DDDDDebug("HandlerScheduler %s selectData allCloase so return done",
-              this->handler_->Name());
+              this->handler_->Name().c_str());
     return {ChannelData{-1, nullptr}, true};
   }
 
@@ -180,7 +181,8 @@ std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
 }
 
 void HandlerScheduler::RunTask(std::promise<bool> promise, int task_idx) {
-  DDDDDebug("HandlerScheduler %s[%d] start", this->handler_->Name(), task_idx);
+  DDDDDebug("HandlerScheduler %s[%d] start", this->handler_->Name().c_str(),
+            task_idx);
   while (true) {
     auto [data, task_done] = this->TaskSelectData();
 
@@ -206,7 +208,8 @@ void HandlerScheduler::RunTask(std::promise<bool> promise, int task_idx) {
     }
   }
   this->NotifyCondSignal();
-  DDDDDebug("HandlerScheduler %s[%d] done", this->handler_->Name(), task_idx);
+  DDDDDebug("HandlerScheduler %s[%d] done", this->handler_->Name().c_str(),
+            task_idx);
   promise.set_value(true);  // 执行成功
 }
 
@@ -273,7 +276,7 @@ bool HandlerScheduler::TaskDetectDone(int task_idx) {
         dynamic_cast<HandlerSupportDone *>(this->handler_);
     if (done_handler->Done()) {
       DDDDDebug("HandlerScheduler %s[%d] HandlerSupportDone is Done.",
-                this->handler_->Name(), task_idx);
+                this->handler_->Name().c_str(), task_idx);
       return true;
     }
   }

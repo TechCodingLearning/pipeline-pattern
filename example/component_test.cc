@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:56:51
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 01:19:12
+ * @LastEditTime: 2024-04-14 14:54:14
  * @FilePath: /pipeline/example/component_test.cc
  * @Description:
  *
@@ -18,10 +18,9 @@
 
 #include "comm/blocking_queue.h"
 #include "comm/defines.h"
-#include "comm/functional.h"
 #include "comm/rate_limiter.h"
 #include "debug.h"
-// #include "pipeline.h"
+#include "functional.h"
 
 namespace {
 using namespace std;
@@ -196,11 +195,14 @@ class Interface {
   virtual void doSomething() = 0;  // 纯虚函数
 };
 
+typedef std::function<void(std::string name)> HandleFunc;
+
 // 实现接口的类
 class MyClass : public Interface {
  public:
   MyClass() {}
   MyClass(std::string name) : name_(name) {}
+  MyClass(HandleFunc callBack) { callBack("xxxxx"); }
   virtual ~MyClass(){};
   void doSomething() override {
     std::cout << "MyClass 实现了接口" << std::endl;
@@ -272,41 +274,9 @@ TEST(VectorSlice, Basic) {
   }
 }
 
-TEST(PipelinePrint, Basic) {
-  // PIPELINE::Pipeline* p = PIPELINE::NewPipeline();
-  // PIPELINE::HandlerImpl* handler = PIPELINE::NewHandler(
-  //     "handler1", 1, nullptr, 0, 2, [](const PIPELINE::ChannelData&
-  //     chan_data) {
-  //       std::vector<PIPELINE::ChannelData> res(2);
-  //       for (int i = 0; i < 2; i++) {
-  //         res.push_back(PIPELINE::ChannelData(0, new int(i)));
-  //       }
-  //       res.push_back(PIPELINE::ChannelData(0, nullptr));
-  //       return res;
-  //     });
-  // p->AddStage(PIPELINE::NewStage(
-  //     "stage1", PIPELINE::NewHandler(
-  //                   "handler1", 1, nullptr, 0, 2,
-  //                   [](const PIPELINE::ChannelData& chan_data) {
-  //                     std::vector<PIPELINE::ChannelData> res(2);
-  //                     for (int i = 0; i < 2; i++) {
-  //                       res.push_back(PIPELINE::ChannelData(0, new
-  //                       int(i)));
-  //                     }
-  //                     res.push_back(PIPELINE::ChannelData(0, nullptr));
-  //                     return res;
-  //                   })));
-  // p->AddStage(PIPELINE::NewStage(
-  //     "stage2",
-  //     PIPELINE::NewHandler("handler2", 5, nullptr, 2, 0,
-  //                          [](const PIPELINE::ChannelData& chan_data) {
-  //                            if (!chan_data.IsEnd()) {
-  //                              std::this_thread::sleep_for(
-  //                                  std::chrono::microseconds(100));
-  //                            }
-  //                            return std::vector<PIPELINE::ChannelData>();
-  //                          })));
-  // cout << p->String() << endl;
-}
+void ttt(std::string name) { cout << name << endl; }
 
+MyClass* NewMyClass(HandleFunc callBack) { return new MyClass(callBack); }
+
+TEST(FuncTest, Basic) { MyClass* c = NewMyClass(ttt); }
 }  // namespace

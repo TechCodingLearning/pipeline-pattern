@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-04-05 08:01:30
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 00:11:27
+ * @LastEditTime: 2024-04-14 13:44:51
  * @FilePath: /pipeline/stage.h
  * @Description:
  *
@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
-#include "blocking_queue.h"
-#include "handler_scheduler.h"
+#include "comm/blocking_queue.h"
+#include "handler.h"
 
 namespace PIPELINE {
 

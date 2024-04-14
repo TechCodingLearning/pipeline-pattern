@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 23:00:48
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 01:11:00
- * @FilePath: /pipeline/handler_impl.cc
+ * @LastEditTime: 2024-04-14 17:37:36
+ * @FilePath: /pipeline/pipeline/handler_impl.cc
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -13,37 +13,34 @@
 
 #include <iostream>
 
-#include "comm/rate_limiter.h"
-
 namespace PIPELINE {
 
 // 处理器实现
 // 构造函数
 HandlerImpl::HandlerImpl(std::string name, int task_num, Limiter* limiter,
-                         int in_chan_num, int out_chan_num,
-                         PIPELINE::HandleFunc handleFunc)
+                         int in_chan_num, int out_chan_num, HandleFunc handle)
     : HandlerBase(name, task_num, limiter, in_chan_num, out_chan_num),
-      handle_(handleFunc),
+      handle_(handle),
       only_once_(false),
       ignore_end_data_(false) {}
 
 // 析构函数
-HandlerImpl::~HandlerImpl(){};
+HandlerImpl::~HandlerImpl() {}
 
 // 处理逻辑
-DataSlice HandlerImpl::Handle(const ChannelData& chanData) {
+DataSlice HandlerImpl::Handle(const ChannelData& chan_data) {
   if (this->only_once_) {
     this->SetDone(true);
   }
 
-  if (this->ignore_end_data_ && chanData.IsEnd()) {
+  if (this->ignore_end_data_ && chan_data.IsEnd()) {
     std::cout << "HandlerImpl " << this->name_
-              << "Handle ignoreEndData == true && chanData.IsEnd()"
+              << "Handle ignoreEndData == true && chan_data.IsEnd()"
               << std::endl;
     return {};
   }
 
-  return this->handle_(chanData);
+  return this->handle_(chan_data);
 }
 
 // 设置是否仅处理一次

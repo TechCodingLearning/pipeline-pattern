@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-04-14 01:06:07
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 01:11:23
- * @FilePath: /pipeline/handler_impl.h
+ * @LastEditTime: 2024-04-14 17:37:44
+ * @FilePath: /pipeline/pipeline/handler_impl.h
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -12,6 +12,7 @@
 #ifndef PIPELINE_HANDLER_IMPL_H_
 #define PIPELINE_HANDLER_IMPL_H_
 
+#include "comm/rate_limiter.h"
 #include "handler.h"
 
 namespace PIPELINE {
@@ -24,7 +25,7 @@ class HandlerImpl : public HandlerBase {
 
   virtual ~HandlerImpl();
 
-  DataSlice Handle(const ChannelData& chanData);
+  DataSlice Handle(const ChannelData& chan_data);
 
   void SetOnlyOnce(bool only_Once);
 
@@ -35,8 +36,8 @@ class HandlerImpl : public HandlerBase {
   bool only_once_;
   bool ignore_end_data_;
 
-  HandlerImpl(const HandlerBase&) = delete;             // 禁用
-  HandlerImpl& operator=(const HandlerBase&) = delete;  // 禁用
+  HandlerImpl(const HandlerImpl&) = delete;             // 禁用
+  HandlerImpl& operator=(const HandlerImpl&) = delete;  // 禁用
 };
 
 }  // namespace PIPELINE
