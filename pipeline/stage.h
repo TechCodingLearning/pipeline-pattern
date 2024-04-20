@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-04-05 08:01:30
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 13:44:51
- * @FilePath: /pipeline/stage.h
+ * @LastEditTime: 2024-04-15 17:26:03
+ * @FilePath: /pipeline/pipeline/stage.h
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -17,6 +17,7 @@
 
 #include "comm/blocking_queue.h"
 #include "handler.h"
+#include "handler_scheduler.h"
 
 namespace PIPELINE {
 
@@ -33,7 +34,8 @@ class Stage {
   int OutChanNum();
 
   // 执行
-  void Run(const std::vector<BlockingQueue<ChannelData> *> &in_chans,
+  void Run(std::promise<bool> promise, int thread_idx,
+           const std::vector<BlockingQueue<ChannelData> *> &in_chans,
            const std::vector<BlockingQueue<ChannelData> *> &out_chans);
 
  private:

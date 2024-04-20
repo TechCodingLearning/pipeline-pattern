@@ -1,8 +1,8 @@
 /*
  * @Author: lourisxu
- * @Date: 2024-03-26 07:45:36
+ * @Date: 2024-04-14 23:22:04
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-03-29 11:33:50
+ * @LastEditTime: 2024-04-15 17:09:07
  * @FilePath: /pipeline/comm/debug.h
  * @Description:
  *
@@ -11,24 +11,23 @@
 #ifndef PIPELINE_COMM_DEBUG_H_
 #define PIPELINE_COMM_DEBUG_H_
 
-#include <stdio.h>
-
+#include <iostream>
 #include <string>
 
 namespace PIPELINE {
 
-bool ddddDebug = false;
+extern bool ddddDebug;
 
 template <typename... Args>
 void DDDDDebug(const std::string &format, const Args &...args) {
   if (ddddDebug) {
-    std::printf(("DDDDD " + format).c_str(), args...);
+    std::printf(("DDDDD " + format + "\n").c_str(), args...);
   }
 }
 
-void EnableDebug() { ddddDebug = true; }
+void EnableDebug();
 
-void DisblaeDebug() { ddddDebug = false; }
+void DisblaeDebug();
 
 }  // namespace PIPELINE
 

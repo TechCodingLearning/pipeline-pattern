@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:56:51
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 14:54:14
+ * @LastEditTime: 2024-04-15 17:25:43
  * @FilePath: /pipeline/example/component_test.cc
  * @Description:
  *
@@ -11,6 +11,7 @@
 #include <gtest/gtest.h>
 
 #include <ctime>
+#include <exception>
 #include <future>
 #include <iostream>
 #include <string>

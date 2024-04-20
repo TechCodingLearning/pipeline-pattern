@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-03-26 07:09:59
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 00:14:03
- * @FilePath: /pipeline/handler_scheduler.h
+ * @LastEditTime: 2024-04-20 15:34:51
+ * @FilePath: /pipeline/pipeline/handler_scheduler.h
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -76,11 +76,12 @@ class HandlerScheduler {
   std::vector<BlockingQueue<ChannelData>*> ins_;   // 扇入通道
   std::vector<BlockingQueue<ChannelData>*> outs_;  // 扇出通道
   BlockingQueue<ChannelData> merged_in_;           // 中心式合并通道
-  std::vector<bool> closed_index_;  // 已关闭的入通道索引
-  bool started_;                    // 是否调度中
-  std::atomic_int handle_num_;      // 已处理数
-  std::mutex mtx_;                  // 互斥量
-  std::condition_variable cond_;    // 条件变量
+  std::vector<bool> closed_index_;     // 已关闭的入通道索引
+  bool started_;                       // 是否调度中
+  std::atomic_int handle_num_;         // 已处理数
+  std::mutex mtx_;                     // 互斥量
+  std::condition_variable cond_;       // 条件变量
+  std::chrono::milliseconds timeout_;  // 超时时间
 
   HandlerScheduler(const HandlerScheduler&) = delete;             // 禁用
   HandlerScheduler& operator=(const HandlerScheduler&) = delete;  // 禁用

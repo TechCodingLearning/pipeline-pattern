@@ -2,7 +2,7 @@
 Author: lourisxu
 Date: 2024-03-23 19:59:09
 LastEditors: lourisxu
-LastEditTime: 2024-04-14 17:41:29
+LastEditTime: 2024-04-15 17:02:15
 FilePath: /pipeline/BUILD
 Description: 
 
@@ -10,7 +10,6 @@ Copyright (c) 2024 by lourisxu, All Rights Reserved.
 '''
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
 
-# all_srcs = glob(["comm/*.cc", "comm/*.h", "pipeline/*.cc", "pipeline/*.h"])
 all_srcs = glob(["comm/*.cc", "pipeline/*.cc"])
 all_hdrs = glob(["comm/*.h", "pipeline/*.h"])
 include_dir = ["comm", "pipeline"]

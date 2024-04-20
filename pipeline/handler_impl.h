@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-04-14 01:06:07
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 17:37:44
+ * @LastEditTime: 2024-04-20 17:22:02
  * @FilePath: /pipeline/pipeline/handler_impl.h
  * @Description:
  *
@@ -25,7 +25,7 @@ class HandlerImpl : public HandlerBase {
 
   virtual ~HandlerImpl();
 
-  DataSlice Handle(const ChannelData& chan_data);
+  DataSlice Handle(const ChannelData& chan_data) override;
 
   void SetOnlyOnce(bool only_Once);
 

@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 20:22:41
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 17:37:53
+ * @LastEditTime: 2024-04-20 17:30:49
  * @FilePath: /pipeline/pipeline/handler.h
  * @Description:
  *
@@ -12,6 +12,7 @@
 #define PIPELINE_HANDLER_H_
 
 #include <functional>
+#include <iostream>
 #include <string>
 
 #include "comm/defines.h"
@@ -74,7 +75,7 @@ class HandlerBase : public HandlerSupportNeedLimit {
 
   int OutChanNum() override { return this->out_chan_num_; }
 
-  virtual DataSlice Handle(const ChannelData& chanData) override { return {}; }
+  virtual DataSlice Handle(const ChannelData& chan_data) override { return {}; }
 
   bool NeedLimit() override { return this->limiter_ != nullptr; }
 

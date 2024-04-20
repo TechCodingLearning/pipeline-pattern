@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-03-27 08:15:21
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 13:56:12
- * @FilePath: /pipeline/handler_scheduler.cc
+ * @LastEditTime: 2024-04-20 23:14:05
+ * @FilePath: /pipeline/pipeline/handler_scheduler.cc
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -12,7 +12,9 @@
 #include "handler_scheduler.h"
 
 #include <ctime>
-#include <stdexcept>
+#include <exception>
+#include <future>
+// #include <stdexcept>
 #include <string>
 
 #include "comm/debug.h"
@@ -30,19 +32,34 @@ HandlerScheduler::HandlerScheduler(
   this->started_ = false;
   this->closed_index_ = std::vector<bool>(in_chans.size(), false);
   this->handle_num_ = std::atomic_bool(false);
+  this->timeout_ = std::chrono::milliseconds(3000);  // 默认3000ms超时时间
 }
 
 HandlerScheduler::~HandlerScheduler() {}
 
 void HandlerScheduler::Schedule(std::promise<bool> promise, int thread_idx) {
-  if (this->started_) {
-    throw std::runtime_error(pprintf("HandlerScheduler %s taskNum:%d",
-                                     this->handler_->Name().c_str(),
-                                     this->handler_->TaskNum()));
+  try {
+    if (this->started_) {
+      throw std::runtime_error(pprintf("HandlerScheduler %s taskNum:%d",
+                                       this->handler_->Name().c_str(),
+                                       this->handler_->TaskNum()));
+    }
+    std::cout << "run scheuddddd" << std::endl;
+    // 开始执行任务
+    this->started_ = true;
+    this->StartTasks();
+    std::cout << "=====finish to run scheuddddd" << std::endl;
+    promise.set_value(true);
+  } catch (const std::future_error &e) {
+    std::cerr << "Run Scheduler FutureError: " << e.what() << std::endl;
+    promise.set_exception_at_thread_exit(std::current_exception());
+    // throw std::runtime_error(e.what());
+  } catch (const std::exception &e) {
+    std::cerr << "Run Scheduler ExceptionErr: " << e.what() << std::endl;
+    promise.set_exception_at_thread_exit(std::current_exception());
+  } catch (...) {
+    std::cout << "Unknown Exception" << std::endl;
   }
-  // 开始执行任务
-  this->started_ = true;
-  this->StartTasks();
 }
 
 void HandlerScheduler::StartTasks() {
@@ -52,22 +69,29 @@ void HandlerScheduler::StartTasks() {
                                      this->handler_->TaskNum()));
   }
 
-  DDDDDebug("HandlerScheduler %s start tasks", this->handler_->Name().c_str());
+  DDDDDebug("HandlerScheduler %s start tasks\n",
+            this->handler_->Name().c_str());
 
   int n_thread = this->handler_->TaskNum() + 1;
   std::vector<std::promise<bool>> result_promises(n_thread);
   std::vector<std::future<bool>> result_futures(n_thread);
   std::vector<std::thread> threads;
 
+  std::cout << "run StartTasksdddddd" << std::endl;
+
   // 绑定扇入通道处理函数
   result_futures[0] = result_promises[0].get_future();
   threads.push_back(std::thread(&HandlerScheduler::SelectAndResendData, this,
-                                std::move(result_promises[0]), -1));
+                                std::move(result_promises[0]), 0));
+
+  // 最后关闭中心合并通道
+  // this->merged_in_.Close();
+
   // 绑定扇出通道处理函数
   for (int i = 1; i < n_thread; i++) {
     result_futures[i] = result_promises[i].get_future();
     threads.push_back(std::thread(&HandlerScheduler::RunTask, this,
-                                  std::move(result_promises[i]), i - 1));
+                                  std::move(result_promises[i]), i));
   }
 
   // 阻塞式捕获子线程的异常
@@ -76,11 +100,13 @@ void HandlerScheduler::StartTasks() {
       result_futures[i].get();  // 子线程如果发生异常，则抛出
     }
   } catch (const std::future_error &e) {
-    std::cerr << "Run Scheduler FutureError: " << e.what() << std::endl;
+    std::cerr << "Run StartTasks FutureError: " << e.what() << std::endl;
     throw std::runtime_error(e.what());
   } catch (const std::exception &e) {
-    std::cerr << "Run Scheduler Exception caught: " << e.what() << std::endl;
+    std::cerr << "Run StartTasks Exception caught: " << e.what() << std::endl;
     throw std::runtime_error(e.what());
+  } catch (...) {
+    std::cerr << "Unknown Exception" << std::endl;
   }
 
   // 阻塞等待所有线程执行完成
@@ -89,6 +115,8 @@ void HandlerScheduler::StartTasks() {
 }
 
 void HandlerScheduler::WaitUntil(const int &expect_n, std::string scene) {
+  std::cout << "======= waitUntil start" << std::endl;
+
   char timeString[100];
   std::chrono::system_clock::time_point curTime =
       std::chrono::system_clock::now();
@@ -97,15 +125,19 @@ void HandlerScheduler::WaitUntil(const int &expect_n, std::string scene) {
   std::strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S",
                 std::localtime(&currentTime));
   DDDDDebug(
-      "HandlerScheduler %s waitUntil scene:%s expectN:%d handlerNum:%d time:%s",
+      "HandlerScheduler %s waitUntil scene:%s expectN:%d handlerNum:%d time: "
+      "%s",
       this->handler_->Name().c_str(), scene.c_str(), expect_n,
       this->handle_num_.load(), std::string(timeString).c_str());
+
+  std::cout << "======= waitUntil dddddd" << std::endl;
 
   std::unique_lock<std::mutex> lock(this->mtx_);
   while (expect_n != this->handle_num_.load()) {
     this->cond_.wait(lock);
   }
 
+  std::cout << "======= waitUntil finish" << std::endl;
   return;
 }
 
@@ -116,28 +148,44 @@ void HandlerScheduler::NotifyCondSignal() {
 
 void HandlerScheduler::SelectAndResendData(std::promise<bool> promise,
                                            int thread_idx) {
-  int n = 0;
-  while (true) {
-    auto [data, done] = this->SelectData();
-    DDDDDebug(
-        "HandlerScheduler %s selectAndResendData selectData data:%s, done:%d",
-        this->handler_->Name().c_str(), data.String().c_str(), done);
-    if (done) {
-      this->WaitUntil(n, "done");
+  try {
+    int n = 0;
+    while (true) {
+      std::cout << "run SelectAndResendDatadddddd" << std::endl;
+      auto [data, done] = this->SelectData();
+      std::cout << "run select data 33333, is_done:" << done << std::endl;
+      DDDDDebug(
+          "HandlerScheduler %s selectAndResendData selectData data:%s,done:%d",
+          this->handler_->Name().c_str(), data.String().c_str(), done);
+      if (done) {
+        // 等待处理完成
+        this->WaitUntil(n, "done");
+        std::cout << "run select data 66666" << std::endl;
+        promise.set_value(true);
+        DDDDDebug("HandlerScheduler %s selectAndResendData done",
+                  this->handler_->Name().c_str());
 
-      DDDDDebug("HandlerScheduler %s selectAndResendData done",
-                this->handler_->Name().c_str());
-      return;
+        // 最后关闭中心合并通道
+        this->merged_in_.Close();
+        std::cout << "run select data 77777" << std::endl;
+        return;
+      }
+
+      std::cout << "run select data 44444" << std::endl;
+
+      // 阻塞式push
+      this->merged_in_.Push(data);
+
+      n++;
     }
 
-    // 阻塞式push
-    this->merged_in_.Push(data);
-
-    n++;
+    // 最后关闭中心合并通道
+    this->merged_in_.Close();
+    promise.set_value(true);
+  } catch (const std::exception &e) {
+    std::cerr << "run SelectAndResendData exception:" << e.what() << std::endl;
+    promise.set_exception_at_thread_exit(std::current_exception());
   }
-
-  // 最后关闭中心合并通道
-  this->merged_in_.Close();
 }
 
 std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
@@ -148,6 +196,9 @@ std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
   DDDDDebug("HandlerScheduler %s selectData closedIndex: %s",
             this->handler_->Name().c_str(),
             pprintf(this->closed_index_).c_str());
+
+  std::cout << "run select data" << std::endl;
+  std::cout << "in chans size: " << this->ins_.size() << std::endl;
 
   for (int i = 0; i < this->ins_.size(); i++) {
     if (this->closed_index_[i]) {
@@ -167,12 +218,17 @@ std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
   }
 
   // 从扇入通道选择数据
-  auto [chosen_index, data, ok] = Select(this->ins_);
+  auto [chosen_index, data, ok] = Select(selected_chans, this->timeout_);
 
-  int index = selected_indexes[chosen_index];
   if (ok) {
+    std::cout << "run select data 22222:  " << *(static_cast<int *>(data.data))
+              << std::endl;
+  }
+  int index = selected_indexes[chosen_index];
+  std::cout << "index : " << index << " ok : " << ok << std::endl;
+  if (!ok) {
     this->closed_index_[index] = true;  // 已关闭
-    return {};
+    return this->SelectData();
   }
 
   // 重新编号
@@ -181,47 +237,72 @@ std::tuple<ChannelData, bool> HandlerScheduler::SelectData() {
 }
 
 void HandlerScheduler::RunTask(std::promise<bool> promise, int task_idx) {
-  DDDDDebug("HandlerScheduler %s[%d] start", this->handler_->Name().c_str(),
-            task_idx);
-  while (true) {
-    auto [data, task_done] = this->TaskSelectData();
+  std::cout << "====== run task mmmmmmmm" << std::endl;
+  DDDDDebug("HandlerScheduler RunTask %s[%d] start",
+            this->handler_->Name().c_str(), task_idx);
+  try {
+    while (true) {
+      std::cout << "====== run task eeeeee" << std::endl;
 
-    // 限流
-    this->TaskRateLimit(task_idx, data);
+      auto [data, task_done] = this->TaskSelectData();
+      std::cout << "====== run task ssasaaa: "
+                << *(static_cast<int *>(data.data)) << std::endl;
 
-    // 处理数据
-    DataSlice out_data = this->Handle(data);
+      // 限流
+      this->TaskRateLimit(task_idx, data);
+      std::cout << "====== run task hhhhhh" << std::endl;
 
-    // 扇出
-    bool done = this->TaskDealOutData(out_data);
+      // 处理数据
+      DataSlice out_data = this->Handle(data);
+      std::cout << "====== run task ooooooo" << std::endl;
+      std::cout << "====== run task jjjjjj: "
+                << *(static_cast<int *>(out_data[0].data)) << std::endl;
 
-    if (done) {
-      task_done = true;
+      // 扇出
+      bool done = this->TaskDealOutData(out_data);
+
+      if (done) {
+        std::cout << "run StartTask doneone ======" << std::endl;
+        task_done = true;
+      }
+
+      // 已处理数自增1
+      this->handle_num_.fetch_add(1);
+      this->NotifyCondSignal();  // 通知条件变量
+
+      if (task_done || this->TaskDetectDone(task_idx)) {
+        break;
+      }
     }
 
-    // 已处理数自增1
-    this->handle_num_.fetch_add(1);
-    this->NotifyCondSignal();  // 通知条件变量
+    this->NotifyCondSignal();
 
-    if (task_done || this->TaskDetectDone(task_idx)) {
-      return;
-    }
+    DDDDDebug("HandlerScheduler %s[%d] done", this->handler_->Name().c_str(),
+              task_idx);
+
+    promise.set_value(true);  // 执行成功
+  } catch (const std::exception &e) {
+    std::cerr << "run task exception:" << e.what() << std::endl;
+
+    promise.set_exception_at_thread_exit(std::current_exception());
   }
-  this->NotifyCondSignal();
-  DDDDDebug("HandlerScheduler %s[%d] done", this->handler_->Name().c_str(),
-            task_idx);
-  promise.set_value(true);  // 执行成功
 }
 
 std::tuple<ChannelData, bool> HandlerScheduler::TaskSelectData() {
   if (this->ins_.size() == 0) {
+    std::cout << "====== task select ins == 0" << std::endl;
     return {ChannelData(-1, nullptr), false};
   }
 
+  std::cout << "task select data dddddd" << std::endl;
+
   // 中心式合并通道已关闭，并且数据已经处理完毕
   if (this->merged_in_.Closed() && this->merged_in_.Empty()) {
+    std::cout << "merged_channel closed!" << std::endl;
     return {ChannelData(-1, nullptr), true};
   }
+
+  std::cout << "task select data eeasasssss" << std::endl;
 
   // 阻塞式获取待处理数据
   ChannelData data;
@@ -258,11 +339,15 @@ bool HandlerScheduler::TaskDealOutData(const DataSlice &data_list) {
 
     // 数据输出通道索引非法
     if (data.index >= this->handler_->OutChanNum()) {
-      std::runtime_error(
+      throw std::runtime_error(
           pprintf("HandlerScheduler %s outData.Index:%d >= OutChanNum: %d",
                   this->handler_->Name().c_str(), data.index,
                   this->handler_->OutChanNum()));
     }
+
+    std::cout << "task deal out data: [index: " << data.index
+              << " data: " << *(static_cast<int *>(data.data)) << "]"
+              << std::endl;
 
     this->outs_[data.index]->Push(data);
   }
@@ -284,6 +369,7 @@ bool HandlerScheduler::TaskDetectDone(int task_idx) {
 }
 
 DataSlice HandlerScheduler::Handle(const ChannelData &chan_data) {
+  std::cout << "schedule in handle" << std::endl;
   return this->handler_->Handle(chan_data);
 }
 }  // namespace PIPELINE
