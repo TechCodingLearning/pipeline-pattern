@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:56:51
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-21 10:01:24
+ * @LastEditTime: 2024-04-21 20:34:31
  * @FilePath: /pipeline/example/component_test.cc
  * @Description:
  *
@@ -53,7 +53,11 @@ TEST(FunctionalTest, Basic) {
   mp["case2"] = 2;
   cout << PIPELINE::pprintf(mp) << endl;
 
-  cout << PIPELINE::pprintf(10, "| %s %d %c |", "aaa", 2, 'h') << endl;
+  std::string ss = PIPELINE::pprintf(30, "%s %d %c", "aaa", 2, 'h');
+  cout << PIPELINE::pprintf("| %s |", ss.c_str()) << endl;
+
+  int width = 30;
+  cout << PIPELINE::pprintfWithVL(width, "%s %d %c", "aaa", 2, 'h') << endl;
 }
 
 TEST(RateLimiterTest, Basic) {

@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 19:53:39
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-14 13:53:57
+ * @LastEditTime: 2024-04-21 20:29:40
  * @FilePath: /pipeline/comm/functional.h
  * @Description:
  *
@@ -85,8 +85,40 @@ std::string pprintf(const int& width, const std::string& format,
   char buffer[MAX_BUF_SIZE];
   std::snprintf(buffer, sizeof(buffer), format.c_str(), args...);
 
+  int len = std::string(buffer).length();
+
   std::ostringstream oss;
-  oss << std::left << std::setw(width) << std::string(buffer);
+
+  // 固定列宽，左右两边填充空格
+  if (width > len) {
+    std::string blank_str = std::string((width - len) / 2, ' ').c_str();
+    oss << blank_str << std::string(buffer) << blank_str;
+  } else {
+    oss << std::string(buffer);
+  }
+
+  return oss.str();
+}
+
+// 固定列宽基础上，两侧添加竖线
+template <typename... Args>
+std::string pprintfWithVL(const int& width, const std::string& format,
+                          const Args&... args) {
+  char buffer[MAX_BUF_SIZE];
+  std::snprintf(buffer, sizeof(buffer), format.c_str(), args...);
+
+  int len = std::string(buffer).length();
+
+  std::ostringstream oss;
+
+  // 固定列宽，左右两边填充空格
+  if (width > len) {
+    std::string blank_str = std::string((width - len) / 2 - 1, ' ');
+    oss << "|" << blank_str << std::string(buffer) << blank_str << "|";
+  } else {
+    oss << "|" << std::string(buffer) << "|";
+  }
+
   return oss.str();
 }
 

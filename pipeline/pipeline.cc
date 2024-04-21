@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:15:58
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-21 19:38:25
+ * @LastEditTime: 2024-04-21 20:35:27
  * @FilePath: /pipeline/pipeline/pipeline.cc
  * @Description:
  *
@@ -146,20 +146,21 @@ std::string Pipeline::String() {
   std::vector<std::string> lines(lineCount + 2);
   for (int i = 0; i < n; i++) {
     Stage* s = this->stages_[i];
-    std::string format = "| %s |";
-    lines[0] += pprintf(maxLens[i], format, s->name_.c_str());
+    std::string format = " %s ";
+    int width = maxLens[i] + 4;
+    lines[0] += pprintfWithVL(width, format, s->name_.c_str());
     lines[0] += "    ";
     lines[1] +=
-        pprintf(maxLens[i], format, std::string(maxLens[i], '-').c_str());
+        pprintfWithVL(width, format, std::string(maxLens[i], '-').c_str());
     lines[1] += "    ";
     int j = 2;
     for (auto& h : s->handlers_) {
       for (int k = 0; k < std::max(h->InChanNum(), h->OutChanNum()); k++) {
         if (k == 0) {
-          lines[j] += pprintf(maxLens[i], format, h->Name().c_str());
+          lines[j] += pprintfWithVL(width, format, h->Name().c_str());
         } else {
-          lines[j] += pprintf(maxLens[i], format,
-                              std::string(h->Name().length(), '*').c_str());
+          lines[j] += pprintfWithVL(
+              width, format, std::string(h->Name().length(), '*').c_str());
         }
 
         // 输出通道打印->
@@ -176,7 +177,7 @@ std::string Pipeline::String() {
     // 若某个Stage的行数不足需要填充
     for (; j < lineCount + 2; j++) {
       lines[j] +=
-          pprintf(maxLens[i], format, std::string(maxLens[i], ' ').c_str());
+          pprintfWithVL(width, format, std::string(maxLens[i], ' ').c_str());
       lines[j] += "    ";
     }
   }

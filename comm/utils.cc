@@ -2,8 +2,8 @@
  * @Author: lourisxu
  * @Date: 2024-04-15 09:49:39
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-21 16:36:33
- * @FilePath: /pipeline/comm/utils.cc
+ * @LastEditTime: 2024-04-21 19:52:09
+ * @FilePath: /pipeline/bazel-pipeline/comm/utils.cc
  * @Description:
  *
  * Copyright (c) 2024 by lourisxu, All Rights Reserved.
@@ -34,7 +34,6 @@ std::tuple<int, ChannelData, bool, bool> SelectByRandom(
   ChannelData data(-1, nullptr);
   BlockingQueue<ChannelData> *ch = ins[chosen_index];
   if (ch->Closed() && ch->Empty()) {
-    std::cout << "ch close" << std::endl;
     return {chosen_index, data, false, true};
   }
 
@@ -51,19 +50,9 @@ std::tuple<int, ChannelData, bool> Select(
     auto [chosen_index, ch_data, is_get_data, is_closed] = SelectByRandom(ins);
 
     if (is_closed) {
-      std::cout << "select is close" << std::endl;
       return {chosen_index, ch_data, false};
     }
     if (is_get_data) {
-      if (ch_data.data != nullptr) {
-        std::cout << handle_name
-                  << "=== in Select data: [index: " << ch_data.index
-                  << " data: " << *(static_cast<int *>(ch_data.data)) << "]"
-                  << std::endl;
-      } else {
-        std::cout << handle_name << "=== in data: [index: " << ch_data.index
-                  << " data: " << ch_data.data << "]" << std::endl;
-      }
       return {chosen_index, ch_data, true};
     }
     // 阻塞50ms后，继续轮训

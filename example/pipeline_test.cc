@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-04-14 14:53:59
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-21 19:18:17
+ * @LastEditTime: 2024-04-21 20:35:52
  * @FilePath: /pipeline/example/pipeline_test.cc
  * @Description:
  *
@@ -74,12 +74,10 @@ TEST(SchedulerNormal, Basic) {
       }
     }
 
-  } catch (std::exception& e) {
-    cout << "Exception: " << e.what() << endl;
   } catch (std::runtime_error& e) {
-    cout << "RuntimeError: " << e.what() << endl;
-  } catch (...) {
-    cout << "Unknown Exception" << endl;
+    cerr << "RuntimeError: " << e.what() << endl;
+  } catch (std::exception& e) {
+    cerr << "Exception: " << e.what() << endl;
   }
 
   cout << "after run schedule" << endl;
@@ -123,12 +121,10 @@ TEST(SchedulerOnlyOut, Basic) {
       }
     }
 
-  } catch (std::exception& e) {
-    cout << "Exception: " << e.what() << endl;
   } catch (std::runtime_error& e) {
-    cout << "RuntimeError: " << e.what() << endl;
-  } catch (...) {
-    cout << "Unknown Exception" << endl;
+    cerr << "RuntimeError: " << e.what() << endl;
+  } catch (std::exception& e) {
+    cerr << "Exception: " << e.what() << endl;
   }
 
   cout << "after run schedule" << endl;
@@ -209,12 +205,10 @@ TEST(StageTest, Basic) {
   try {
     std::promise<bool> prms;
     stage->Run(std::move(prms), 0, in_chans, out_chans);
-  } catch (std::exception& e) {
-    cout << "Exception: " << e.what() << endl;
   } catch (std::runtime_error& e) {
-    cout << "RuntimeError: " << e.what() << endl;
-  } catch (...) {
-    cout << "Unknown Exception" << endl;
+    cerr << "RuntimeError: " << e.what() << endl;
+  } catch (std::exception& e) {
+    cerr << "Exception: " << e.what() << endl;
   }
 }
 
@@ -256,16 +250,14 @@ TEST(PipelineTest, Basic) {
                              // 结束
                              return res;
                            })));
-  cout << p->String() << endl;
 
   PIPELINE::EnableDebug();
   try {
+    cout << p->String() << endl;
     p->Process();
-  } catch (std::exception& e) {
-    cerr << "Exception: " << e.what() << endl;
   } catch (std::runtime_error& e) {
     cerr << "RuntimeError: " << e.what() << endl;
-  } catch (std::runtime_error& e) {
-    cerr << "Unknown Exception" << endl;
+  } catch (std::exception& e) {
+    cerr << "Exception: " << e.what() << endl;
   }
 }

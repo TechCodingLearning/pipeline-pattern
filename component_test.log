@@ -14,24 +14,25 @@ test pprintf:aaa, 27
 [ aaaa bbbb cccc ]
 [ 3 4 5 ]
 [ case1: 1 case2: 2 ]
-| aaa 2 h |
+|            aaa 2 h            |
+|          aaa 2 h          |
 [       OK ] FunctionalTest.Basic (0 ms)
 [----------] 1 test from FunctionalTest (0 ms total)
 
 [----------] 1 test from RateLimiterTest
 [ RUN      ] RateLimiterTest.Basic
-Request: 1 processed. Time: 2024-04-21 10:20:07
-Request: 2 processed. Time: 2024-04-21 10:20:07
-Request: 3 processed. Time: 2024-04-21 10:20:07
-Request: 4 processed. Time: 2024-04-21 10:20:08
-Request: 5 processed. Time: 2024-04-21 10:20:08
-Request: 6 processed. Time: 2024-04-21 10:20:08
-Request: 7 processed. Time: 2024-04-21 10:20:08
-Request: 8 processed. Time: 2024-04-21 10:20:08
-Request: 9 processed. Time: 2024-04-21 10:20:09
-Request: 10 processed. Time: 2024-04-21 10:20:09
-[       OK ] RateLimiterTest.Basic (1805 ms)
-[----------] 1 test from RateLimiterTest (1805 ms total)
+Request: 1 processed. Time: 2024-04-21 12:34:35
+Request: 2 processed. Time: 2024-04-21 12:34:35
+Request: 3 processed. Time: 2024-04-21 12:34:35
+Request: 4 processed. Time: 2024-04-21 12:34:35
+Request: 5 processed. Time: 2024-04-21 12:34:36
+Request: 6 processed. Time: 2024-04-21 12:34:36
+Request: 7 processed. Time: 2024-04-21 12:34:36
+Request: 8 processed. Time: 2024-04-21 12:34:36
+Request: 9 processed. Time: 2024-04-21 12:34:36
+Request: 10 processed. Time: 2024-04-21 12:34:37
+[       OK ] RateLimiterTest.Basic (1802 ms)
+[----------] 1 test from RateLimiterTest (1802 ms total)
 
 [----------] 1 test from DebugTest
 [ RUN      ] DebugTest.Basic
@@ -49,31 +50,31 @@ DDDDD test debug[tom], value[99]
 
 [----------] 1 test from ThreadTest
 [ RUN      ] ThreadTest.Basic
-0-th thread exit after sleep 100ms...
-1-th thread exit after sleep 100ms...
-3-th thread exit after sleep 100ms...5-th thread exit after sleep 100ms...
-6-th thread exit after sleep 100ms...
+01-th thread exit after sleep 100ms...
+-th thread exit after sleep 100ms...2-th thread exit after sleep 100ms...
+5-th thread exit after sleep 100ms...
+3-th thread exit after sleep 100ms...
+48-th thread exit after sleep 100ms...
+7-th thread exit after sleep 100ms...9
+-th thread exit after sleep 100ms...-th thread exit after sleep 100ms...6
 
-8-th thread exit after sleep 100ms...4-th thread exit after sleep 100ms...
+-th thread exit after sleep 100ms...
 
-7-th thread exit after sleep 100ms...
-2-th thread exit after sleep 100ms...
-9-th thread exit after sleep 100ms...
-[       OK ] ThreadTest.Basic (0 ms)
-[----------] 1 test from ThreadTest (0 ms total)
+[       OK ] ThreadTest.Basic (1 ms)
+[----------] 1 test from ThreadTest (1 ms total)
 
 [----------] 1 test from FutureTest
 [ RUN      ] FutureTest.Basic
 0-th aaaa
-1-th aaaa
 2-th aaaa
 0-th pass?: 1
-1-th pass?: 14
--th aaaa
+1-th aaaa
+4-th aaaa
+1-th pass?: 1
 2-th pass?: 1
 Exception caught: 3-th error
 [       OK ] FutureTest.Basic (0 ms)
-[----------] 1 test from FutureTest (0 ms total)
+[----------] 1 test from FutureTest (1 ms total)
 
 [----------] 1 test from BlockingQueueTest
 [ RUN      ] BlockingQueueTest.Basic
@@ -127,10 +128,10 @@ xxxxx
 [----------] 1 test from StaticCastTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 11 tests from 11 test suites ran. (1807 ms total)
+[==========] 11 tests from 11 test suites ran. (1806 ms total)
 [  PASSED  ] 11 tests.
 ================================================================================
-//:component_test                                               (cached) PASSED in 2.1s
+//:component_test                                               (cached) PASSED in 2.2s
 
 Executed 0 out of 1 test: 1 test passes.
 There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
