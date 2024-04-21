@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 20:19:38
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-21 19:44:25
+ * @LastEditTime: 2024-04-21 21:06:56
  * @FilePath: /pipeline/README.md
  * @Description: 
  * 
@@ -27,6 +27,13 @@ bazel build //:main --sandbox_debug --cxxopt=-std=c++17
 ./bazel-bin/main
 ```
 
+## 运行可执行文件
+
+```
+./bin/main
+./bin/component_test
+./bin/pipeline_test
+```
 
 ---
 
