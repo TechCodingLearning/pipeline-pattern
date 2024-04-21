@@ -1,3 +1,5 @@
+PASSED: //:pipeline_test (see /private/var/tmp/_bazel_louris/6820384b0526fee7da00ef4eaa9dde64/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/pipeline_test/test.log)
+INFO: From Testing //:pipeline_test
 ==================== Test output for //:pipeline_test:
 Running main() from gmock_main.cc
 [==========] Running 5 tests from 5 test suites.
@@ -232,7 +234,7 @@ DDDDD The process of pipeline is complete.
 [==========] 5 tests from 5 test suites ran. (328 ms total)
 [  PASSED  ] 5 tests.
 ================================================================================
-//:pipeline_test                                                         PASSED in 0.6s
+//:pipeline_test                                                (cached) PASSED in 0.6s
   WARNING: //:pipeline_test: Test execution time (0.6s excluding execution overhead) outside of range for MODERATE tests. Consider setting timeout="short" or size="small".
 
-Executed 1 out of 1 test: 1 test passes.
+Executed 0 out of 1 test: 1 test passes.
