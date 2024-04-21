@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-24 20:22:41
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-20 17:30:49
+ * @LastEditTime: 2024-04-21 09:29:08
  * @FilePath: /pipeline/pipeline/handler.h
  * @Description:
  *
@@ -75,7 +75,10 @@ class HandlerBase : public HandlerSupportNeedLimit {
 
   int OutChanNum() override { return this->out_chan_num_; }
 
-  virtual DataSlice Handle(const ChannelData& chan_data) override { return {}; }
+  virtual DataSlice Handle(const ChannelData& chan_data) override {
+    std::cout << "handleBase HandleFunc=====" << std::endl;
+    return {};
+  }
 
   bool NeedLimit() override { return this->limiter_ != nullptr; }
 

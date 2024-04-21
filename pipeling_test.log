@@ -1,34 +1,238 @@
 ==================== Test output for //:pipeline_test:
 Running main() from gmock_main.cc
-[==========] Running 4 tests from 4 test suites.
+[==========] Running 5 tests from 5 test suites.
 [----------] Global test environment set-up.
 [----------] 1 test from SchedulerNormal
 [ RUN      ] SchedulerNormal.Basic
-[       OK ] SchedulerNormal.Basic (0 ms)
-[----------] 1 test from SchedulerNormal (0 ms total)
+before run schedule
+DDDDD HandlerScheduler handler1 start tasks
+
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 0 ]
+
+DDDDD HandlerScheduler RunTask handler1[1] start
+
+handler1=== in Select data: [index: 0 data: 99]
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: 0, data: 0x600001fd81f0
+,done:0
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 0 ]
+
+ch close
+select is close
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 1 ]
+
+DDDDD HandlerScheduler handler1 selectData allClose so return done
+
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: -1, data: 0x0
+,done:1
+
+DDDDD HandlerScheduler handler1 Select Done n:1 handle_num:0
+
+handler1 ======= waitUntil start
+DDDDD HandlerScheduler handler1 waitUntil scene:done expectN:1 handlerNum:0 time: 2024-04-21 11:38:28
+
+handler1=== in Select data: [index: 0 data: 99]
+handleFunc
+DDDDD HandlerScheduler handler1[1] done
+
+DDDDD HandlerScheduler handler1 selectAndResendData done
+
+result ok:1 ele:100
+result ok:1 ele:111
+after run schedule
+[       OK ] SchedulerNormal.Basic (55 ms)
+[----------] 1 test from SchedulerNormal (55 ms total)
 
 [----------] 1 test from SchedulerOnlyOut
 [ RUN      ] SchedulerOnlyOut.Basic
 before run schedule
-run scheuddddd
 DDDDD HandlerScheduler handler1 start tasks
 
-run StartTasksdddddd
-run SelectAndResendDatadddddd
-====== run task mmmmmmmm
+
 DDDDD HandlerScheduler handler1 selectData closedIndex: [ ]
-run select data
-in chans size: 0
-DDDDD HandlerScheduler handler1 selectData allCloase so return done
-run select data 33333, is_done:1
+
+DDDDD HandlerScheduler handler1 selectData allClose so return done
+
 DDDDD HandlerScheduler RunTask handler1[1] start
+
 DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: -1, data: 0x0
 ,done:1
-======= waitUntil start
-====== run task eeeeee
-====== task select ins == 0
-================================================================================
-//:pipeline_test                                                         FAILED in 0.3s
-  /private/var/tmp/_bazel_louris/6820384b0526fee7da00ef4eaa9dde64/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/pipeline_test/test.log
 
-Executed 1 out of 1 test: 1 fails locally.
+DDDDD HandlerScheduler handler1 Select Done n:0 handle_num:0
+
+handleFunc===========
+DDDDD HandlerScheduler handler1 selectAndResendData done
+
+DDDDD HandlerScheduler handler1[1] done
+
+result ok:1 ele:100
+after run schedule
+[       OK ] SchedulerOnlyOut.Basic (0 ms)
+[----------] 1 test from SchedulerOnlyOut (0 ms total)
+
+[----------] 1 test from SchedulerOnlyIn
+[ RUN      ] SchedulerOnlyIn.Basic
+before run schedule
+DDDDD HandlerScheduler handler1 start tasks
+
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 0 ]
+
+DDDDD HandlerScheduler RunTask handler1[1] start
+
+handler1=== in Select data: [index: 0 data: 99]
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: 0, data: 0x600001fcc060
+,done:0
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 0 ]
+
+ch close
+select is close
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 1 ]
+
+DDDDD HandlerScheduler handler1 selectData allClose so return done
+
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: -1, data: 0x0
+,done:1
+
+DDDDD HandlerScheduler handler1 Select Done n:1 handle_num:0
+
+handler1 ======= waitUntil start
+DDDDD HandlerScheduler handler1 waitUntil scene:done expectN:1 handlerNum:0 time: 2024-04-21 11:38:28
+
+handler1=== in Select data: [index: 0 data: 99]
+handleFunc:100
+DDDDD HandlerScheduler handler1[1] done
+
+DDDDD HandlerScheduler handler1 selectAndResendData done
+
+after run schedule
+[       OK ] SchedulerOnlyIn.Basic (55 ms)
+[----------] 1 test from SchedulerOnlyIn (55 ms total)
+
+[----------] 1 test from StageTest
+[ RUN      ] StageTest.Basic
+DDDDD HandlerScheduler handler1 start tasks
+
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 0 ]
+
+DDDDD HandlerScheduler RunTask handler1[1] start
+
+handler1=== in Select data: [index: 0 data: 99]
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: 0, data: 0x600001fc4060
+,done:0
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 0 ]
+
+ch close
+select is close
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ 1 ]
+
+DDDDD HandlerScheduler handler1 selectData allClose so return done
+
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: -1, data: 0x0
+,done:1
+
+DDDDD HandlerScheduler handler1 Select Done n:1 handle_num:0
+
+handler1 ======= waitUntil start
+DDDDD HandlerScheduler handler1 waitUntil scene:done expectN:1 handlerNum:0 time: 2024-04-21 11:38:28
+
+handler1=== in Select data: [index: 0 data: 99]
+handleFunc:100
+DDDDD HandlerScheduler handler1[1] done
+
+DDDDD HandlerScheduler handler1 selectAndResendData done
+
+[       OK ] StageTest.Basic (54 ms)
+[----------] 1 test from StageTest (54 ms total)
+
+[----------] 1 test from PipelineTest
+[ RUN      ] PipelineTest.Basic
+----------------------------
+| stage1 |    | stage2 |    
+| -------- |    | -------- |    
+| handler1 | -> | handler2 |    
+----------------------------
+DDDDD pipeline start to process..
+
+DDDDD HandlerScheduler handler1 start tasks
+
+
+DDDDD HandlerScheduler handler2 start tasks
+
+
+DDDDD HandlerScheduler handler1 selectData closedIndex: [ ]
+
+DDDDD HandlerScheduler handler1 selectData allClose so return done
+
+DDDDD HandlerScheduler handler2 selectData closedIndex: [ 0 ]
+
+DDDDD HandlerScheduler handler1 selectAndResendData selectData data:[index: -1, data: 0x0
+,done:1
+
+DDDDD HandlerScheduler handler1 Select Done n:0 handle_num:0
+
+DDDDD HandlerScheduler handler1 selectAndResendData done
+
+DDDDD HandlerScheduler RunTask handler1[1] start
+
+DDDDD HandlerScheduler RunTask handler2[1] start
+
+DDDDD HandlerScheduler handler1[1] done
+
+handler2=== in Select data: [index: 0 data: 0]
+DDDDD HandlerScheduler handler2 selectAndResendData selectData data:[index: 0, data: 0x600001fc4030
+,done:0
+
+DDDDD HandlerScheduler handler2 selectData closedIndex: [ 0 ]
+
+handler2=== in Select data: [index: 0 data: 1]
+DDDDD HandlerScheduler handler2 selectAndResendData selectData data:[index: 0, data: 0x600001fc4050
+,done:0
+
+DDDDD HandlerScheduler handler2 selectData closedIndex: [ 0 ]
+
+ch close
+select is close
+DDDDD HandlerScheduler handler2 selectData closedIndex: [ 1 ]
+
+DDDDD HandlerScheduler handler2 selectData allClose so return done
+
+DDDDD HandlerScheduler handler2 selectAndResendData selectData data:[index: -1, data: 0x0
+,done:1
+
+DDDDD HandlerScheduler handler2 Select Done n:2 handle_num:0
+
+handler2 ======= waitUntil start
+DDDDD HandlerScheduler handler2 waitUntil scene:done expectN:2 handlerNum:0 time: 2024-04-21 11:38:28
+
+handler2=== in Select data: [index: 0 data: 0]
+。。。。。handleFunc:
+handleFunc:99
+
+handler2=== in Select data: [index: 0 data: 1]
+。。。。。handleFunc:
+handleFunc:100
+
+DDDDD HandlerScheduler handler2 selectAndResendData done
+
+ch close
+select is close
+DDDDD HandlerScheduler handler2[1] done
+
+DDDDD The process of pipeline is complete.
+
+[       OK ] PipelineTest.Basic (161 ms)
+[----------] 1 test from PipelineTest (161 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 5 test suites ran. (328 ms total)
+[  PASSED  ] 5 tests.
+================================================================================
+//:pipeline_test                                                         PASSED in 0.6s
+  WARNING: //:pipeline_test: Test execution time (0.6s excluding execution overhead) outside of range for MODERATE tests. Consider setting timeout="short" or size="small".
+
+Executed 1 out of 1 test: 1 test passes.

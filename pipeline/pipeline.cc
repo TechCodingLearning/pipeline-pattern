@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:15:58
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-20 20:09:21
+ * @LastEditTime: 2024-04-21 19:38:25
  * @FilePath: /pipeline/pipeline/pipeline.cc
  * @Description:
  *
@@ -42,6 +42,10 @@ void Pipeline::Validate() {
 
     if (i == n - 1) {
       if (s->OutChanNum() != 0) {
+        throw std::runtime_error("OutChanNum of last stage must be 0");
+      }
+    } else {
+      if (s->OutChanNum() != this->stages_[i + 1]->InChanNum()) {
         throw std::runtime_error(pprintf(
             "InChanNum[%d] of stage[%d] must equal OutChanNum[%d] of stage[%d]",
             this->stages_[i + 1]->InChanNum(), i + 1, s->OutChanNum(), i));
@@ -52,65 +56,65 @@ void Pipeline::Validate() {
 
 void Pipeline::Process() {
   DDDDDebug("pipeline start to process..");
-
-  std::cout << "eeeeeeeeeeee======" << std::endl;
-
-  // 验证规则
-  this->Validate();
-
-  // 执行
-  int n_thread = this->stages_.size();
-  std::vector<std::promise<bool>> result_promises(n_thread);
-  std::vector<std::future<bool>> result_futures(n_thread);
-  std::vector<std::thread> threads;
-
-  std::vector<BlockingQueue<ChannelData>*> last_outs;
-  for (int i = 0; i < n_thread; i++) {
-    Stage* s = this->stages_[i];
-
-    // 每个Stage的扇入通道
-    std::vector<BlockingQueue<ChannelData>*> tmp_ins;
-    for (BlockingQueue<ChannelData>* bq : last_outs) {
-      tmp_ins.push_back(bq);
-    }
-
-    // 每个Stage的扇出通道
-    std::vector<BlockingQueue<ChannelData>*> new_outs;
-    for (int j = 0; j < s->OutChanNum(); j++) {
-      new_outs.push_back(new BlockingQueue<ChannelData>());
-    }
-
-    std::vector<BlockingQueue<ChannelData>*> tmp_outs;
-    for (BlockingQueue<ChannelData>* bq : new_outs) {
-      tmp_outs.push_back(bq);
-    }
-
-    result_futures[i] = result_promises[i].get_future();
-    threads.push_back(std::thread(&PIPELINE::Stage::Run,
-                                  std::move(this->stages_[i]),
-                                  std::move(result_promises[i]), i,
-                                  std::move(tmp_ins), std::move(tmp_outs)));
-
-    // 上一个Stage的扇出通道 == 下一个Stage的扇入通道
-    last_outs = new_outs;
-  }
-
-  // 阻塞式捕获子线程的异常
   try {
+    // 验证规则
+    this->Validate();
+
+    // 执行
+    int n_thread = this->stages_.size();
+    std::vector<std::promise<bool>> result_promises(n_thread);
+    std::vector<std::future<bool>> result_futures(n_thread);
+    std::vector<std::thread> threads;
+
+    std::vector<BlockingQueue<ChannelData>*> last_outs;
+    for (int i = 0; i < n_thread; i++) {
+      Stage* s = this->stages_[i];
+
+      // 每个Stage的扇入通道
+      std::vector<BlockingQueue<ChannelData>*> tmp_ins;
+      for (BlockingQueue<ChannelData>* bq : last_outs) {
+        tmp_ins.push_back(bq);
+      }
+
+      // 每个Stage的扇出通道
+      std::vector<BlockingQueue<ChannelData>*> new_outs;
+      for (int j = 0; j < s->OutChanNum(); j++) {
+        new_outs.push_back(new BlockingQueue<ChannelData>());
+      }
+
+      std::vector<BlockingQueue<ChannelData>*> tmp_outs;
+      for (BlockingQueue<ChannelData>* bq : new_outs) {
+        tmp_outs.push_back(bq);
+      }
+
+      result_futures[i] = result_promises[i].get_future();
+      threads.push_back(std::thread(&PIPELINE::Stage::Run, this->stages_[i],
+                                    std::move(result_promises[i]), i,
+                                    std::move(tmp_ins), std::move(tmp_outs)));
+
+      // 上一个Stage的扇出通道 == 下一个Stage的扇入通道
+      last_outs = new_outs;
+    }
+
+    // 阻塞式捕获子线程的异常
+
     for (int i = 0; i < n_thread; i++) {
       result_futures[i].get();  // 子线程如果发生异常，则抛出
     }
+
+    // 阻塞等待所有线程执行完成
+    std::for_each(threads.begin(), threads.end(),
+                  std::mem_fn(&std::thread::join));
+
   } catch (const std::future_error& e) {
     std::cerr << "Run Pipeline FutureError: " << e.what() << std::endl;
     throw std::runtime_error(e.what());
   } catch (const std::exception& e) {
     std::cerr << "Run Pipeline Exception caught: " << e.what() << std::endl;
     throw std::runtime_error(e.what());
+  } catch (const std::runtime_error& e) {
+    throw std::runtime_error("Unkown error");
   }
-
-  // 阻塞等待所有线程执行完成
-  std::for_each(threads.begin(), threads.end(),
-                std::mem_fn(&std::thread::join));
 
   DDDDDebug("The process of pipeline is complete.");
 }

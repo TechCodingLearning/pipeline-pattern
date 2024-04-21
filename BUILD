@@ -2,7 +2,7 @@
 Author: lourisxu
 Date: 2024-03-23 19:59:09
 LastEditors: lourisxu
-LastEditTime: 2024-04-15 17:02:15
+LastEditTime: 2024-04-21 19:31:11
 FilePath: /pipeline/BUILD
 Description: 
 
@@ -21,6 +21,14 @@ cc_library(
     visibility = ["//visibility:public"],
     includes = include_dir,
 	# copts = ["-std=c++17"],
+)
+
+cc_binary(
+    name = "main",
+    srcs = ["main.cc"],
+    deps = [
+        ":pipeline",
+    ],
 )
 
 cc_test(

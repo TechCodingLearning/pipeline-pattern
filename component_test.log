@@ -2,7 +2,7 @@ PASSED: //:component_test (see /private/var/tmp/_bazel_louris/6820384b0526fee7da
 INFO: From Testing //:component_test
 ==================== Test output for //:component_test:
 Running main() from gmock_main.cc
-[==========] Running 10 tests from 10 test suites.
+[==========] Running 11 tests from 11 test suites.
 [----------] Global test environment set-up.
 [----------] 1 test from FunctionalTest
 [ RUN      ] FunctionalTest.Basic
@@ -20,41 +20,47 @@ test pprintf:aaa, 27
 
 [----------] 1 test from RateLimiterTest
 [ RUN      ] RateLimiterTest.Basic
-Request: 1 processed. Time: 2024-04-15 08:51:45
-Request: 2 processed. Time: 2024-04-15 08:51:45
-Request: 3 processed. Time: 2024-04-15 08:51:45
-Request: 4 processed. Time: 2024-04-15 08:51:45
-Request: 5 processed. Time: 2024-04-15 08:51:46
-Request: 6 processed. Time: 2024-04-15 08:51:46
-Request: 7 processed. Time: 2024-04-15 08:51:46
-Request: 8 processed. Time: 2024-04-15 08:51:46
-Request: 9 processed. Time: 2024-04-15 08:51:46
-Request: 10 processed. Time: 2024-04-15 08:51:47
+Request: 1 processed. Time: 2024-04-21 10:20:07
+Request: 2 processed. Time: 2024-04-21 10:20:07
+Request: 3 processed. Time: 2024-04-21 10:20:07
+Request: 4 processed. Time: 2024-04-21 10:20:08
+Request: 5 processed. Time: 2024-04-21 10:20:08
+Request: 6 processed. Time: 2024-04-21 10:20:08
+Request: 7 processed. Time: 2024-04-21 10:20:08
+Request: 8 processed. Time: 2024-04-21 10:20:08
+Request: 9 processed. Time: 2024-04-21 10:20:09
+Request: 10 processed. Time: 2024-04-21 10:20:09
 [       OK ] RateLimiterTest.Basic (1805 ms)
 [----------] 1 test from RateLimiterTest (1805 ms total)
 
 [----------] 1 test from DebugTest
 [ RUN      ] DebugTest.Basic
 DDDDD test debug[tony], value[27]
+
+
 DDDDD test debug[tom], value[29]
+
+
 DDDDD test debug[tom], value[99]
+
+
 [       OK ] DebugTest.Basic (0 ms)
 [----------] 1 test from DebugTest (0 ms total)
 
 [----------] 1 test from ThreadTest
 [ RUN      ] ThreadTest.Basic
-0-th thread exit after sleep 100ms...1-th thread exit after sleep 100ms...
-3-th thread exit after sleep 100ms...
-8-th thread exit after sleep 100ms...
-
-9-th thread exit after sleep 100ms...
-4-th thread exit after sleep 100ms...
-5-th thread exit after sleep 100ms...
+0-th thread exit after sleep 100ms...
+1-th thread exit after sleep 100ms...
+3-th thread exit after sleep 100ms...5-th thread exit after sleep 100ms...
 6-th thread exit after sleep 100ms...
-2-th thread exit after sleep 100ms...
+
+8-th thread exit after sleep 100ms...4-th thread exit after sleep 100ms...
+
 7-th thread exit after sleep 100ms...
+2-th thread exit after sleep 100ms...
+9-th thread exit after sleep 100ms...
 [       OK ] ThreadTest.Basic (0 ms)
-[----------] 1 test from ThreadTest (1 ms total)
+[----------] 1 test from ThreadTest (0 ms total)
 
 [----------] 1 test from FutureTest
 [ RUN      ] FutureTest.Basic
@@ -62,12 +68,12 @@ DDDDD test debug[tom], value[99]
 1-th aaaa
 2-th aaaa
 0-th pass?: 1
-1-th pass?: 1
+1-th pass?: 14
+-th aaaa
 2-th pass?: 1
 Exception caught: 3-th error
-4-th aaaa
 [       OK ] FutureTest.Basic (0 ms)
-[----------] 1 test from FutureTest (1 ms total)
+[----------] 1 test from FutureTest (0 ms total)
 
 [----------] 1 test from BlockingQueueTest
 [ RUN      ] BlockingQueueTest.Basic
@@ -114,11 +120,17 @@ xxxxx
 [       OK ] FuncTest.Basic (0 ms)
 [----------] 1 test from FuncTest (0 ms total)
 
+[----------] 1 test from StaticCastTest
+[ RUN      ] StaticCastTest.Basic
+
+[       OK ] StaticCastTest.Basic (0 ms)
+[----------] 1 test from StaticCastTest (0 ms total)
+
 [----------] Global test environment tear-down
-[==========] 10 tests from 10 test suites ran. (1808 ms total)
-[  PASSED  ] 10 tests.
+[==========] 11 tests from 11 test suites ran. (1807 ms total)
+[  PASSED  ] 11 tests.
 ================================================================================
-//:component_test                                               (cached) PASSED in 1.9s
+//:component_test                                               (cached) PASSED in 2.1s
 
 Executed 0 out of 1 test: 1 test passes.
 There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.

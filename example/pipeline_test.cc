@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-04-14 14:53:59
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-20 23:20:36
+ * @LastEditTime: 2024-04-21 19:18:17
  * @FilePath: /pipeline/example/pipeline_test.cc
  * @Description:
  *
@@ -29,7 +29,7 @@ using namespace std;
 void exitHandler() { std::cout << std::flush; }
 
 TEST(SchedulerNormal, Basic) {
-  return;
+  // return;
   PIPELINE::HandlerImpl* handler = PIPELINE::NewHandler(
       "handler1", 1, nullptr, 1, 1, [](const PIPELINE::ChannelData& chan_data) {
         std::vector<PIPELINE::ChannelData> res;
@@ -68,8 +68,10 @@ TEST(SchedulerNormal, Basic) {
     while (!out_chans[0]->Empty()) {
       PIPELINE::ChannelData ele;
       bool ok = out_chans[0]->TryAndPop(ele);
-      cout << "result ok:" << ok << " ele:" << *(static_cast<int*>(ele.data))
-           << endl;
+      if (ok) {
+        cout << "result ok:" << ok << " ele:" << *(static_cast<int*>(ele.data))
+             << endl;
+      }
     }
 
   } catch (std::exception& e) {
@@ -88,9 +90,8 @@ TEST(SchedulerOnlyOut, Basic) {
   PIPELINE::HandlerImpl* handler = PIPELINE::NewHandler(
       "handler1", 1, nullptr, 0, 1, [](const PIPELINE::ChannelData& chan_data) {
         std::vector<PIPELINE::ChannelData> res;
-        int* a = static_cast<int*>(chan_data.data);
-        (*a)++;
-        cout << "handleFunc" << endl;
+        int* a = new int(100);
+        std::cout << "handleFunc===========" << std::endl;
         res.push_back(PIPELINE::ChannelData(0, a));
         // 任务处理结束标志 ChannelData.data == nullptr
         res.push_back(PIPELINE::ChannelData(-1, nullptr));
@@ -100,13 +101,8 @@ TEST(SchedulerOnlyOut, Basic) {
   vector<PIPELINE::BlockingQueue<PIPELINE::ChannelData>*> in_chans;
   vector<PIPELINE::BlockingQueue<PIPELINE::ChannelData>*> out_chans;
 
-  // in_chans.push_back(new PIPELINE::BlockingQueue<PIPELINE::ChannelData>());
-
   out_chans.push_back(new PIPELINE::BlockingQueue<PIPELINE::ChannelData>());
   PIPELINE::HandlerScheduler scheduler(handler, in_chans, out_chans);
-
-  // in_chans[0]->Push(PIPELINE::ChannelData(0, new int(99)));
-  // in_chans[0]->Close();  // 不关闭则会触发select的超时退出逻辑
 
   cout << "before run schedule" << endl;
   PIPELINE::EnableDebug();
@@ -117,6 +113,15 @@ TEST(SchedulerOnlyOut, Basic) {
   try {
     std::promise<bool> prms;
     scheduler.Schedule(std::move(prms), 0);
+
+    while (!out_chans[0]->Empty()) {
+      PIPELINE::ChannelData ele;
+      bool ok = out_chans[0]->TryAndPop(ele);
+      if (ok) {
+        cout << "result ok:" << ok << " ele:" << *(static_cast<int*>(ele.data))
+             << endl;
+      }
+    }
 
   } catch (std::exception& e) {
     cout << "Exception: " << e.what() << endl;
@@ -129,14 +134,62 @@ TEST(SchedulerOnlyOut, Basic) {
   cout << "after run schedule" << endl;
 }
 
+TEST(SchedulerOnlyIn, Basic) {
+  // return;
+  PIPELINE::HandlerImpl* handler = PIPELINE::NewHandler(
+      "handler1", 1, nullptr, 1, 0, [](const PIPELINE::ChannelData& chan_data) {
+        std::vector<PIPELINE::ChannelData> res;
+        int* a = static_cast<int*>(chan_data.data);
+        (*a)++;
+        cout << "handleFunc:" << *a << endl;
+        // res.push_back(PIPELINE::ChannelData(0, a));
+        // res.push_back(PIPELINE::ChannelData(0, new int(111)));
+        // // 如果没有关闭通道，则任务处理结束标志为
+        // // ChannelData.data == nullptr
+        res.push_back(PIPELINE::ChannelData(-1, nullptr));
+        return res;
+      });
+
+  vector<PIPELINE::BlockingQueue<PIPELINE::ChannelData>*> in_chans;
+  vector<PIPELINE::BlockingQueue<PIPELINE::ChannelData>*> out_chans;
+
+  in_chans.push_back(new PIPELINE::BlockingQueue<PIPELINE::ChannelData>());
+
+  PIPELINE::HandlerScheduler scheduler(handler, in_chans, out_chans);
+
+  in_chans[0]->Push(PIPELINE::ChannelData(0, new int(99)));
+  in_chans[0]->Close();  // 不关闭则会触发select的超时退出逻辑
+
+  cout << "before run schedule" << endl;
+  PIPELINE::EnableDebug();
+
+  // 注册终止处理函数
+  std::atexit(exitHandler);
+
+  try {
+    std::promise<bool> prms;
+    scheduler.Schedule(std::move(prms), 0);
+  } catch (std::exception& e) {
+    cout << "Exception: " << e.what() << endl;
+  } catch (std::runtime_error& e) {
+    cout << "RuntimeError: " << e.what() << endl;
+  } catch (...) {
+    cout << "Unknown Exception" << endl;
+  }
+
+  cout << "after run schedule" << endl;
+}
+
 TEST(StageTest, Basic) {
-  return;
+  // return;
   PIPELINE::Stage* stage = PIPELINE::NewStage(
       "stage1",
       PIPELINE::NewHandler("handler1", 1, nullptr, 1, 1,
                            [](const PIPELINE::ChannelData& chan_data) {
                              std::vector<PIPELINE::ChannelData> res;
                              int* a = static_cast<int*>(chan_data.data);
+                             (*a)++;
+                             cout << "handleFunc:" << *a << endl;
                              res.push_back(PIPELINE::ChannelData(0, a));
                              // 任务处理结束标志 ChannelData.data == nullptr
                              res.push_back(PIPELINE::ChannelData(0, nullptr));
@@ -165,14 +218,9 @@ TEST(StageTest, Basic) {
   }
 }
 
-TEST(PipelinePrint, Basic) {
-  return;
+TEST(PipelineTest, Basic) {
+  // return;
   PIPELINE::Pipeline* p = PIPELINE::NewPipeline();
-
-  // p->AddStage(PIPELINE::NewStage(
-  //     "stage1", PIPELINE::NewHandlerBase("handler1", 1, nullptr, 0, 2)));
-  // p->AddStage(PIPELINE::NewStage(
-  //     "stage2", PIPELINE::NewHandlerBase("handler2", 1, nullptr, 2, 0)));
 
   p->AddStage(PIPELINE::NewStage(
       "stage1", PIPELINE::NewHandler(
@@ -190,11 +238,23 @@ TEST(PipelinePrint, Basic) {
       "stage2",
       PIPELINE::NewHandler("handler2", 1, nullptr, 1, 0,
                            [](const PIPELINE::ChannelData& chan_data) {
+                             std::vector<PIPELINE::ChannelData> res;
+                             // if (chan_data.IsEnd()) {
+                             //   // 结束标志
+                             //   res.push_back(PIPELINE::ChannelData(-1,
+                             //   nullptr));
+                             // }
+
                              if (!chan_data.IsEnd()) {
-                               std::this_thread::sleep_for(
-                                   std::chrono::microseconds(100));
+                               //  std::this_thread::sleep_for(
+                               //      std::chrono::microseconds(100));
+                               cout << "。。。。。handleFunc:" << endl;
+                               int* a = static_cast<int*>(chan_data.data);
+                               (*a) += 99;
+                               cout << "handleFunc:" << *a << endl << endl;
                              }
-                             return std::vector<PIPELINE::ChannelData>();
+                             // 结束
+                             return res;
                            })));
   cout << p->String() << endl;
 
@@ -205,7 +265,7 @@ TEST(PipelinePrint, Basic) {
     cerr << "Exception: " << e.what() << endl;
   } catch (std::runtime_error& e) {
     cerr << "RuntimeError: " << e.what() << endl;
-  } catch (...) {
+  } catch (std::runtime_error& e) {
     cerr << "Unknown Exception" << endl;
   }
 }

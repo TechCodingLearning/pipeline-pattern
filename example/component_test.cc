@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 19:56:51
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-15 17:25:43
+ * @LastEditTime: 2024-04-21 10:01:24
  * @FilePath: /pipeline/example/component_test.cc
  * @Description:
  *
@@ -280,4 +280,42 @@ void ttt(std::string name) { cout << name << endl; }
 MyClass* NewMyClass(HandleFunc callBack) { return new MyClass(callBack); }
 
 TEST(FuncTest, Basic) { MyClass* c = NewMyClass(ttt); }
+
+TEST(StaticCastTest, Basic) {
+  int* a = new int(10);
+  PIPELINE::ChannelData chan_data(-1, a);
+
+  try {
+    // static_cast转换失败会出现未定义且无法捕获的异常
+    string* b = reinterpret_cast<string*>(chan_data.data);
+    cout << *b << endl;
+  } catch (const std::exception& e) {
+    cerr << "caught exception: " << e.what() << endl;
+  } catch (...) {
+    cerr << "eeeeeee" << endl;
+  }
+}
+
+// macOS 10.13不支持std::any_cast
+// struct MyChannelData {
+//   int index;
+//   void* data;
+//   ChannelData() : index(-1), data(nullptr) {}
+//   ChannelData(int idx, void* data) : index(idx), data(data) {}
+// };
+
+// TEST(AnyTest, Basic) {
+//   int* a = new int(10);
+//   MyChannelData chan_data(-1, a);
+
+//   try {
+//     // static_cast转换失败会出现未定义且无法捕获的异常
+//     string* b = any_cast<string*>(chan_data.data);
+//     cout << *b << endl;
+//   } catch (const std::exception& e) {
+//     cerr << "caught exception: " << e.what() << endl;
+//   } catch (...) {
+//     cerr << "eeeeeee" << endl;
+//   }
+// }
 }  // namespace

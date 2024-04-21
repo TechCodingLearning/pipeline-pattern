@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-04-15 09:49:39
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-20 16:02:30
+ * @LastEditTime: 2024-04-21 16:36:33
  * @FilePath: /pipeline/comm/utils.cc
  * @Description:
  *
@@ -43,6 +43,7 @@ std::tuple<int, ChannelData, bool, bool> SelectByRandom(
 }
 
 std::tuple<int, ChannelData, bool> Select(
+    const std::string &handle_name,
     std::vector<BlockingQueue<ChannelData> *> &ins,
     const std::chrono::milliseconds &timeout) {
   auto startTime = std::chrono::steady_clock::now();
@@ -54,6 +55,15 @@ std::tuple<int, ChannelData, bool> Select(
       return {chosen_index, ch_data, false};
     }
     if (is_get_data) {
+      if (ch_data.data != nullptr) {
+        std::cout << handle_name
+                  << "=== in Select data: [index: " << ch_data.index
+                  << " data: " << *(static_cast<int *>(ch_data.data)) << "]"
+                  << std::endl;
+      } else {
+        std::cout << handle_name << "=== in data: [index: " << ch_data.index
+                  << " data: " << ch_data.data << "]" << std::endl;
+      }
       return {chosen_index, ch_data, true};
     }
     // 阻塞50ms后，继续轮训
