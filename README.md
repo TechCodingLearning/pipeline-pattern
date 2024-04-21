@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 20:19:38
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-15 16:52:04
+ * @LastEditTime: 2024-04-21 19:44:25
  * @FilePath: /pipeline/README.md
  * @Description: 
  * 
@@ -19,12 +19,12 @@ bazel test --cxxopt=-std=c++17 --test_output=all //:pipeline_test --verbose_fail
 
 ## 编译
 ```
-bazel build //:pipeline --sandbox_debug --cxxopt=-std=c++17
+bazel build //:main --sandbox_debug --cxxopt=-std=c++17
 ```
 
 ## 执行主函数
 ```
-./bazel-bin/pipeline
+./bazel-bin/main
 ```
 
 
