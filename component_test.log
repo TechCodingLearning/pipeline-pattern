@@ -1,5 +1,3 @@
-PASSED: //:component_test (see /private/var/tmp/_bazel_louris/6820384b0526fee7da00ef4eaa9dde64/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/component_test/test.log)
-INFO: From Testing //:component_test
 ==================== Test output for //:component_test:
 Running main() from gmock_main.cc
 [==========] Running 11 tests from 11 test suites.
@@ -21,18 +19,18 @@ test pprintf:aaa, 27
 
 [----------] 1 test from RateLimiterTest
 [ RUN      ] RateLimiterTest.Basic
-Request: 1 processed. Time: 2024-04-21 12:34:35
-Request: 2 processed. Time: 2024-04-21 12:34:35
-Request: 3 processed. Time: 2024-04-21 12:34:35
-Request: 4 processed. Time: 2024-04-21 12:34:35
-Request: 5 processed. Time: 2024-04-21 12:34:36
-Request: 6 processed. Time: 2024-04-21 12:34:36
-Request: 7 processed. Time: 2024-04-21 12:34:36
-Request: 8 processed. Time: 2024-04-21 12:34:36
-Request: 9 processed. Time: 2024-04-21 12:34:36
-Request: 10 processed. Time: 2024-04-21 12:34:37
-[       OK ] RateLimiterTest.Basic (1802 ms)
-[----------] 1 test from RateLimiterTest (1802 ms total)
+Request: 1 processed. Time: 2024-04-21 13:03:24
+Request: 2 processed. Time: 2024-04-21 13:03:24
+Request: 3 processed. Time: 2024-04-21 13:03:24
+Request: 4 processed. Time: 2024-04-21 13:03:25
+Request: 5 processed. Time: 2024-04-21 13:03:25
+Request: 6 processed. Time: 2024-04-21 13:03:25
+Request: 7 processed. Time: 2024-04-21 13:03:25
+Request: 8 processed. Time: 2024-04-21 13:03:25
+Request: 9 processed. Time: 2024-04-21 13:03:26
+Request: 10 processed. Time: 2024-04-21 13:03:26
+[       OK ] RateLimiterTest.Basic (1805 ms)
+[----------] 1 test from RateLimiterTest (1805 ms total)
 
 [----------] 1 test from DebugTest
 [ RUN      ] DebugTest.Basic
@@ -50,16 +48,16 @@ DDDDD test debug[tom], value[99]
 
 [----------] 1 test from ThreadTest
 [ RUN      ] ThreadTest.Basic
-01-th thread exit after sleep 100ms...
--th thread exit after sleep 100ms...2-th thread exit after sleep 100ms...
+0-th thread exit after sleep 100ms...
+1-th thread exit after sleep 100ms...24-th thread exit after sleep 100ms...
+6-th thread exit after sleep 100ms...-th thread exit after sleep 100ms...
+
+
+7-th thread exit after sleep 100ms...
+9-th thread exit after sleep 100ms...
 5-th thread exit after sleep 100ms...
+8-th thread exit after sleep 100ms...
 3-th thread exit after sleep 100ms...
-48-th thread exit after sleep 100ms...
-7-th thread exit after sleep 100ms...9
--th thread exit after sleep 100ms...-th thread exit after sleep 100ms...6
-
--th thread exit after sleep 100ms...
-
 [       OK ] ThreadTest.Basic (1 ms)
 [----------] 1 test from ThreadTest (1 ms total)
 
@@ -67,9 +65,9 @@ DDDDD test debug[tom], value[99]
 [ RUN      ] FutureTest.Basic
 0-th aaaa
 2-th aaaa
-0-th pass?: 1
-1-th aaaa
-4-th aaaa
+10-th aaaa-th pass?: 
+41
+-th aaaa
 1-th pass?: 1
 2-th pass?: 1
 Exception caught: 3-th error
@@ -128,10 +126,10 @@ xxxxx
 [----------] 1 test from StaticCastTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 11 tests from 11 test suites ran. (1806 ms total)
+[==========] 11 tests from 11 test suites ran. (1809 ms total)
 [  PASSED  ] 11 tests.
 ================================================================================
-//:component_test                                               (cached) PASSED in 2.2s
+//:component_test                                                        PASSED in 2.1s
 
-Executed 0 out of 1 test: 1 test passes.
+Executed 1 out of 1 test: 1 test passes.
 There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
