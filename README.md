@@ -2,7 +2,7 @@
  * @Author: lourisxu
  * @Date: 2024-03-23 20:19:38
  * @LastEditors: lourisxu
- * @LastEditTime: 2024-04-21 21:06:56
+ * @LastEditTime: 2025-02-08 10:19:00
  * @FilePath: /pipeline/README.md
  * @Description: 
  * 
@@ -42,5 +42,3 @@ bazel build //:main --sandbox_debug --cxxopt=-std=c++17
 [1] Go Concurrency Patterns: Pipelines and cancellation: https://go.dev/blog/pipelines
 
 [2] C++ Pipeline Pattern: https://github.com/Saahitya/pipeline_design_pattern
-
-[3] Go CheckComm: https://git.woa.com/prd_base_pay_go/check_comm.git
